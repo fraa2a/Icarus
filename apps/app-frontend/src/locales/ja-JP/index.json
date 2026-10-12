@@ -162,7 +162,7 @@
     "message": "ネームタグを非表示にする"
   },
   "app.appearance-settings.minimize-launcher.description": {
-    "message": "Minecraftを起動したときにModrinth Appを最小化します。"
+    "message": "Minecraftを起動したときにIcarusを最小化します。"
   },
   "app.appearance-settings.minimize-launcher.title": {
     "message": "ランチャーを最小化"
@@ -204,7 +204,7 @@
     "message": "ホームとコンテンツ"
   },
   "app.behavior-settings.refocus-on-game-close.description": {
-    "message": "Minecraftが終了したときに、Modrinth Appを前面に表示します。"
+    "message": "Minecraftが終了したときに、Icarusを前面に表示します。"
   },
   "app.behavior-settings.refocus-on-game-close.title": {
     "message": "Minecraftが閉じられたときにアプリをフォーカスする"
@@ -489,7 +489,7 @@
     "message": "インスタンスを表示"
   },
   "app.hosting.update-required.description": {
-    "message": "Modrinth Hostingを利用するには、Modrinth Appを更新してください"
+    "message": "Modrinth Hostingを利用するには、Icarusを更新してください"
   },
   "app.hosting.update-required.download": {
     "message": "ダウンロードして更新"
@@ -498,7 +498,7 @@
     "message": "ワクワクしているModrinth Bot"
   },
   "app.hosting.update-required.title": {
-    "message": "Modrinth Appの更新が必要です"
+    "message": "Icarusの更新が必要です"
   },
   "app.install.phase.downloading_content": {
     "message": "コンテンツをダウンロード中"
@@ -1620,7 +1620,7 @@
     "message": "古い順"
   },
   "app.settings.app-version": {
-    "message": "Modrinth App {version}"
+    "message": "Icarus {version}"
   },
   "app.settings.default-instance-options.environment-variables.description": {
     "message": "インスタンス起動時に設定される環境変数"
@@ -2139,7 +2139,7 @@
     "message": "Modrinthは広告収益によって運営され、クリエイターへの報酬もその収益から支払われています。当社のパートナーは、広告のパーソナライズや効果測定のために、アプリ内でCookieを保存・利用する場合があります。この機能は下のボタンから個別に拒否や許可または変更することができます。"
   },
   "app.settings.privacy.discord-rich-presence.description": {
-    "message": "Discordの現在のプレイ中に Modrinth App を表示します。これはModによってインスタンスに追加されるRich Presenceには影響しません。適用にはアプリの再起動が必要です。"
+    "message": "Discordの現在のプレイ中に Icarus を表示します。これはModによってインスタンスに追加されるRich Presenceには影響しません。適用にはアプリの再起動が必要です。"
   },
   "app.settings.privacy.discord-rich-presence.title": {
     "message": "Discord Rich Presence"
@@ -2184,7 +2184,7 @@
     "message": "アプリのディレクトリを参照"
   },
   "app.settings.resource-management.app-directory.description": {
-    "message": "Modrinth Appがインスタンスやその他のファイルを保存する場所です。変更はアプリの再起動後に反映されます。"
+    "message": "Icarusがインスタンスやその他のファイルを保存する場所です。変更はアプリの再起動後に反映されます。"
   },
   "app.settings.resource-management.app-directory.select": {
     "message": "新しいアプリディレクトリを選択"
@@ -2472,7 +2472,7 @@
     "message": "オンに切り替え"
   },
   "app.survey.body": {
-    "message": "Modrinth App の使用感についての簡単なアンケートにご協力いただけますか？"
+    "message": "Icarus の使用感についての簡単なアンケートにご協力いただけますか？"
   },
   "app.survey.footer": {
     "message": "このフィードバックはModrinthチームに直接届けられ、今後のアップデートの改善に役立てられます！"
@@ -2490,13 +2490,13 @@
     "message": "スキップ"
   },
   "app.update-popup.body.download-complete": {
-    "message": "Modrinth App v{version} のダウンロードが完了しました。今すぐ更新するには再読み込みするか、Modrinth Appを閉じる際に自動更新されます。"
+    "message": "Icarus v{version} のダウンロードが完了しました。今すぐ更新するには再読み込みするか、Icarusを閉じる際に自動更新されます。"
   },
   "app.update-popup.body.linux": {
-    "message": "Modrinth App v{version} が利用可能です。最新の機能と修正プログラムを入手するには、パッケージマネージャーを使用して更新してください！"
+    "message": "Icarus v{version} が利用可能です。最新の機能と修正プログラムを入手するには、パッケージマネージャーを使用して更新してください！"
   },
   "app.update-popup.body.metered": {
-    "message": "Modrinth App v{version} が利用可能になりました！お使いのネットワークが従量制のため、自動ダウンロードは行っておりません。"
+    "message": "Icarus v{version} が利用可能になりました！お使いのネットワークが従量制のため、自動ダウンロードは行っておりません。"
   },
   "app.update-popup.changelog": {
     "message": "更新履歴"
