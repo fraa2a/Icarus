@@ -15,11 +15,11 @@ const { formatMessage } = useVIntl()
 const messages = defineMessages({
 	title: {
 		id: 'app.hosting.update-required.title',
-		defaultMessage: 'Modrinth App update required',
+		defaultMessage: 'Icarus update required',
 	},
 	description: {
 		id: 'app.hosting.update-required.description',
-		defaultMessage: 'You need to update to use Modrinth Hosting through the Modrinth App',
+		defaultMessage: 'You need to update to use Modrinth Hosting through the Icarus',
 	},
 	downloadToUpdate: {
 		id: 'app.hosting.update-required.download',
