@@ -27,12 +27,12 @@ env:
 jobs:
   build:
     name: Build frontend
-    runs-on: namespace-profile-modrinth-frontend
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
     steps:
       - name: Checkout code
-        uses: namespacelabs/nscloud-checkout-action@66f2dc6f6c42a8ac6c4e53473c4840006822831e # v9.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Configure environment
         id: meta
@@ -52,15 +52,6 @@ jobs:
 
       - name: Enable Corepack
         run: corepack enable
-
-      - name: Set up caches
-        uses: namespacelabs/nscloud-cache-action@1124a6f3ce44e5cf84cc22111530961f4d2a15f9 # v1.7.0
-        with:
-          cache: |
-            pnpm
-
-      - name: Set up Turborepo caching
-        uses: namespace-actions/setup-turbocache@a94b84c111f2cc781a4a83c4d07a99f2c63e33d6 # v0.0.3
 
       - name: Inject build variables
         working-directory: ./apps/frontend
@@ -91,13 +82,14 @@ jobs:
           cp -r apps/frontend/.output apps/frontend/docker-stage/.output
 
       - name: Upload Docker context
-        uses: namespace-actions/upload-artifact@f6ccaacc655aec41b93af180d1d7eef21af862d2 # v1.0.3
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: frontend-docker-context
           retention-days: 1
           path: apps/frontend/docker-stage
 
   docker-build:
+    if: github.repository == 'modrinth/code'
     needs: [build]
     uses: SparkUniverse/workflows/.github/workflows/docker-build.yaml@main
     with:
@@ -108,8 +100,9 @@ jobs:
   deploy:
     name: Roll out to Magic Containers
     needs: [docker-build]
-    if: ${{ github.ref == 'refs/heads/prod' && github.event_name == 'push' }}
-    runs-on: namespace-profile-tiny-arm64
+    if: ${{ github.repository == 'modrinth/code' && (github.ref == 'refs/heads/prod' && github.event_name == 'push') }}
+
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
     steps:

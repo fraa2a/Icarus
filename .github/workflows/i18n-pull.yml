@@ -19,7 +19,8 @@ jobs:
   pull_translations:
     name: 'Pull translations from Crowdin'
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: ${{ github.repository == 'modrinth/code' && (github.ref == 'refs/heads/main') }}
+
     concurrency:
       group: i18n-pull:${{ github.ref }}
       cancel-in-progress: true

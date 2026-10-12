@@ -32,21 +32,16 @@ env:
 jobs:
   build:
     name: Build daedalus_client
-    runs-on: ${{ (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) && 'namespace-profile-medium-amd64' || 'ubuntu-latest' }}
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out code
-        if: env.INTERNAL != 'true'
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-
-      - name: Check out code (Namespace)
-        if: env.INTERNAL == 'true'
-        uses: namespacelabs/nscloud-checkout-action@66f2dc6f6c42a8ac6c4e53473c4840006822831e # v9.0.1
 
       - name: Setup Rust toolchain
         uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659 # v1.17.0
         with:
           rustflags: ''
-          cache: false
+          cache: true
 
       - name: Setup mold
         uses: rui314/setup-mold@9c9c13bf4c3f1adef0cc596abc155580bcb04444 # v1 / Mold 2.41.0
@@ -61,7 +56,7 @@ jobs:
 
       - name: Upload Docker context
         if: env.INTERNAL == 'true'
-        uses: namespace-actions/upload-artifact@f6ccaacc655aec41b93af180d1d7eef21af862d2 # v1.0.3
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: daedalus-docker-context
           retention-days: 1
@@ -69,7 +64,8 @@ jobs:
 
   docker-build:
     needs: [build]
-    if: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
+    if: ${{ github.repository == 'modrinth/code' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
+
     uses: SparkUniverse/workflows/.github/workflows/docker-build.yaml@main
     with:
       image-name: daedalus
@@ -78,7 +74,8 @@ jobs:
 
   deploy:
     needs: [docker-build]
-    if: ${{ github.ref == 'refs/heads/prod' && github.event_name == 'push' }}
+    if: ${{ github.repository == 'modrinth/code' && (github.ref == 'refs/heads/prod' && github.event_name == 'push') }}
+
     uses: SparkUniverse/workflows/.github/workflows/argo-update.yaml@main
     secrets:
       ARGOCD_DEPLOY_KEY: ${{ secrets.ARGOCD_DEPLOY_KEY }}

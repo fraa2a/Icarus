@@ -44,17 +44,17 @@ env:
 
 jobs:
   deploy:
-    runs-on: namespace-profile-modrinth-frontend
+    if: github.repository == 'modrinth/code'
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       deployments: write
       pull-requests: write
     steps:
       - name: Checkout code
-        uses: namespacelabs/nscloud-checkout-action@66f2dc6f6c42a8ac6c4e53473c4840006822831e # v9.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
-          dissociate: true
 
       - name: Configure environment
         id: meta
@@ -103,17 +103,6 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
-      - name: Set up caches
-        uses: namespacelabs/nscloud-cache-action@1124a6f3ce44e5cf84cc22111530961f4d2a15f9 # v1.7.0
-        with:
-          cache: |
-            rust
-            pnpm
-            apt
-
-      - name: Set up Turborepo caching
-        uses: namespace-actions/setup-turbocache@a94b84c111f2cc781a4a83c4d07a99f2c63e33d6 # v0.0.3
-
       - name: Inject build variables
         working-directory: ./apps/frontend
         run: |
@@ -148,43 +137,42 @@ jobs:
           wranglerVersion: '4.112.0'
           command: --version
 
-      - parallel:
-          - name: Deploy Cloudflare Worker
-            id: wrangler
-            uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
-            with:
-              apiToken: ${{ secrets.CF_API_TOKEN }}
-              accountId: ${{ secrets.CF_ACCOUNT_ID }}
-              environment: ${{ steps.meta.outputs.env != 'production' && steps.meta.outputs.env || '' }}
-              workingDirectory: ./apps/frontend
-              command: ${{ steps.meta.outputs.cmd }}
+      - name: Deploy Cloudflare Worker
+        id: wrangler
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          environment: ${{ steps.meta.outputs.env != 'production' && steps.meta.outputs.env || '' }}
+          workingDirectory: ./apps/frontend
+          command: ${{ steps.meta.outputs.cmd }}
 
-          - name: Deploy staging Cloudflare Worker preview
-            if: ${{ inputs.preview }}
-            uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
-            with:
-              apiToken: ${{ secrets.CF_API_TOKEN }}
-              accountId: ${{ secrets.CF_ACCOUNT_ID }}
-              workingDirectory: ./apps/frontend
-              command: ${{ steps.meta.outputs.staging_cmd }}
+      - name: Deploy staging Cloudflare Worker preview
+        if: ${{ inputs.preview }}
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          workingDirectory: ./apps/frontend
+          command: ${{ steps.meta.outputs.staging_cmd }}
 
-          - name: Deploy persistent Cloudflare Worker preview
-            if: ${{ inputs.preview && inputs.branch_alias != '' }}
-            uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
-            with:
-              apiToken: ${{ secrets.CF_API_TOKEN }}
-              accountId: ${{ secrets.CF_ACCOUNT_ID }}
-              workingDirectory: ./apps/frontend
-              command: versions upload --preview-alias ${{ inputs.branch_alias }} --var PREVIEW:true --var CF_PAGES_URL:${{ steps.meta.outputs.branch_alias_url }}
+      - name: Deploy persistent Cloudflare Worker preview
+        if: ${{ inputs.preview && inputs.branch_alias != '' }}
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          workingDirectory: ./apps/frontend
+          command: versions upload --preview-alias ${{ inputs.branch_alias }} --var PREVIEW:true --var CF_PAGES_URL:${{ steps.meta.outputs.branch_alias_url }}
 
-          - name: Deploy persistent staging Cloudflare Worker preview
-            if: ${{ inputs.preview && inputs.branch_alias != '' }}
-            uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
-            with:
-              apiToken: ${{ secrets.CF_API_TOKEN }}
-              accountId: ${{ secrets.CF_ACCOUNT_ID }}
-              workingDirectory: ./apps/frontend
-              command: ${{ steps.meta.outputs.staging_branch_alias_cmd }}
+      - name: Deploy persistent staging Cloudflare Worker preview
+        if: ${{ inputs.preview && inputs.branch_alias != '' }}
+        uses: cloudflare/wrangler-action@ebbaa1584979971c8614a24965b4405ff95890e0 # v4.0.0
+        with:
+          apiToken: ${{ secrets.CF_API_TOKEN }}
+          accountId: ${{ secrets.CF_ACCOUNT_ID }}
+          workingDirectory: ./apps/frontend
+          command: ${{ steps.meta.outputs.staging_branch_alias_cmd }}
 
       - name: Purge cache
         if: github.ref == 'refs/heads/prod'
@@ -201,17 +189,16 @@ jobs:
           echo "${{ steps.meta.outputs.url }}" > deployment-url-production.txt
           echo "${{ steps.meta.outputs.staging_url }}" > deployment-url-staging.txt
 
-      - parallel:
-          - name: Upload production deployment URL
-            if: ${{ inputs.preview }}
-            uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-            with:
-              name: deployment-url-production
-              path: deployment-url-production.txt
+      - name: Upload production deployment URL
+        if: ${{ inputs.preview }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: deployment-url-production
+          path: deployment-url-production.txt
 
-          - name: Upload staging deployment URL
-            if: ${{ inputs.preview }}
-            uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
-            with:
-              name: deployment-url-staging
-              path: deployment-url-staging.txt
+      - name: Upload staging deployment URL
+        if: ${{ inputs.preview }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: deployment-url-staging
+          path: deployment-url-staging.txt
