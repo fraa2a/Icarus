@@ -20,7 +20,8 @@ env:
 
 jobs:
   release:
-    if: github.repository_owner == 'modrinth' && github.ref == 'refs/heads/main'
+    if: ${{ github.repository == 'modrinth/code' && (github.repository_owner == 'modrinth' && github.ref == 'refs/heads/main') }}
+
     # npm Trusted Publishing requires a GitHub-hosted runner.
     runs-on: ubuntu-latest
     env:
