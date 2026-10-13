@@ -208,6 +208,10 @@ import type { GameInstance } from '@/helpers/types'
 import InstanceHeaderServerMetadata from './instance-page-header-server-metadata.vue'
 
 const messages = defineMessages({
+	runCopy: {
+		id: 'icarus.run-copy.action',
+		defaultMessage: 'Launch copy with another account',
+	},
 	createShortcut: {
 		id: 'instance.action.create-shortcut',
 		defaultMessage: 'Create shortcut',
@@ -302,6 +306,7 @@ const emit = defineEmits<{
 	repair: []
 	stop: []
 	play: []
+	runCopy: []
 	playServer: []
 	settings: []
 	openFolder: []
@@ -362,6 +367,15 @@ const moreActions = computed<ButtonMenuOption[]>(() => {
 			action: () => emit('openFolder'),
 		},
 	]
+
+	if (!props.instance.quarantined && props.instance.install_stage === 'installed') {
+		actions.push({
+			id: 'run-copy',
+			label: formatMessage(messages.runCopy),
+			icon: PlayIcon,
+			action: () => emit('runCopy'),
+		})
+	}
 
 	if (!props.instance.quarantined) {
 		actions.push(

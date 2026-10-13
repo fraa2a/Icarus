@@ -9,6 +9,7 @@ import { onBeforeRouteLeave } from 'vue-router'
 import LibrarySection from '@/components/ui/library/index.vue'
 import { libraryScrollTop } from '@/components/ui/library/view-state'
 import WelcomeScreen from '@/components/ui/WelcomeScreen.vue'
+import ModrinthMigrationBanner from '@/components/ui/ModrinthMigrationBanner.vue'
 import RecentWorldsList from '@/components/ui/world/RecentWorldsList.vue'
 import { useAppSettings } from '@/composables/use-app-settings.ts'
 import { traceStartupStep } from '@/helpers/startup-debug'
@@ -89,13 +90,20 @@ function openPageContextMenu(event: MouseEvent) {
 </script>
 
 <template>
-	<WelcomeScreen v-if="isReady && !hasCreatedInstance" />
+	<div
+		v-if="isReady && !hasCreatedInstance && instances.length === 0"
+		class="flex min-h-full flex-col"
+	>
+		<ModrinthMigrationBanner class="mx-6 mt-6" />
+		<WelcomeScreen class="!min-h-0 flex-1" />
+	</div>
 	<div
 		v-else-if="isReady"
 		data-library-page-background
 		class="flex flex-col gap-3 p-6"
 		@contextmenu="openPageContextMenu"
 	>
+		<ModrinthMigrationBanner />
 		<RecentWorldsList
 			v-if="recentInstances?.length > 0 && appSettings.showJumpIn"
 			:recent-instances="recentInstances"
