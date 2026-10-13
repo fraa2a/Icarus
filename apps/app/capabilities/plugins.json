@@ -23,6 +23,15 @@
 			"identifier": "http:default",
 			"allow": [
 				{
+					"url": "https://github.com/fraa2a/Icarus/releases/*"
+				},
+				{
+					"url": "https://release-assets.githubusercontent.com/*"
+				},
+				{
+					"url": "https://objects.githubusercontent.com/*"
+				},
+				{
 					"url": "https://modrinth.com/*"
 				},
 				{

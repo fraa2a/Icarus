@@ -1226,7 +1226,7 @@ async function logOut() {
 async function fetchStoredModrinthAccounts() {
 	const all = (await getAllCreds().catch(handleError)) ?? []
 	const ids = all.map((account) => account.user_id)
-	const users = ids.length ? ((await get_user_many(ids).catch(handleError)) ?? []) : []
+	const users = ids.length ? (await get_user_many(ids).catch(handleError)) ?? [] : []
 	const usersById = new Map(users.map((user) => [user.id, user]))
 
 	storedModrinthAccounts.value = all.map((account) => ({
@@ -1782,7 +1782,7 @@ async function checkUpdates() {
 async function checkLinuxUpdates() {
 	try {
 		const [response, currentVersion] = await Promise.all([
-			fetch('https://launcher-files.modrinth.com/updates.json'),
+			tauriFetch('https://github.com/fraa2a/Icarus/releases/latest/download/latest.json'),
 			getVersion(),
 		])
 		const updates = await response.json()
@@ -1871,7 +1871,7 @@ async function installUpdate() {
 setAppUpdateActions({
 	download: downloadAvailableUpdate,
 	install: installUpdate,
-	changelog: () => openUrl('https://modrinth.com/news/changelog?filter=app'),
+	changelog: () => openUrl('https://github.com/fraa2a/Icarus/releases'),
 })
 
 async function openModrinthProjectLinkInApp(parsed) {
