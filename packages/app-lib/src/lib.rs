@@ -16,6 +16,7 @@ mod event;
 pub mod install;
 mod launcher;
 mod logger;
+pub mod offline_capes;
 mod state;
 
 pub use api::*;
