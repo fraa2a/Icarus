@@ -1,6 +1,6 @@
 <template>
 	<Transition name="splash-fade" @after-leave="onAfterLeave">
-		<div v-if="!doneLoading" class="splash-screen" :class="`${theme.active}-mode`">
+		<div v-if="!doneLoading" class="splash-screen" :class="`${theme.active}-mode`" :style="accentStyle(accent.active, theme.active === 'light')">
 			<div class="app-logo-wrapper" data-tauri-drag-region>
 				<IcarusLogo class="app-logo" />
 				<ProgressBar class="loading-bar" :progress="Math.min(loadingProgress, 100)" />
@@ -20,10 +20,12 @@ import { onMounted, ref, watch } from 'vue'
 import IcarusLogo from '@/components/ui/IcarusLogo.vue'
 import ProgressBar from '@/components/ui/ProgressBar.vue'
 import { useAppEvent } from '@/composables/use-app-event'
+import { accentStyle, useAccent } from '@/composables/use-accent.ts'
 import { useTheme } from '@/composables/use-theme.ts'
 import { debugStartup } from '@/helpers/startup-debug'
 
 const theme = useTheme()
+const accent = useAccent()
 
 const doneLoading = ref(false)
 const loadingProgress = ref(0)
