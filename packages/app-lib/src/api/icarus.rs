@@ -359,6 +359,11 @@ pub async fn import_modrinth(
                 fs::rename(&backup, &path).await?;
                 return Err(error);
             }
+            fs::remove_dir_all(&backup).await.map_err(|error| {
+                input(&format!(
+                    "The instance was removed from Modrinth App, but its files could not be deleted: {error}"
+                ))
+            })?;
         }
         imported.push(id);
     }
