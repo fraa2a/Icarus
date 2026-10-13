@@ -4,6 +4,7 @@ use thiserror::Error;
 
 pub mod auth;
 pub mod import;
+pub mod icarus;
 pub mod install;
 pub mod instance;
 pub mod jre;
