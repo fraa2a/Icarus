@@ -4,6 +4,7 @@ pub mod debug_info;
 pub mod friends;
 pub mod handler;
 pub mod instance;
+pub mod icarus;
 pub mod jre;
 pub mod logs;
 pub mod metadata;
