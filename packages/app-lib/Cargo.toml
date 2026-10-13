@@ -80,6 +80,7 @@ reqwest = { workspace = true, features = [
   "rustls-tls-webpki-roots",
   "stream",
 ] }
+rsa = { workspace = true }
 rgb = { workspace = true }
 same-file = { workspace = true }
 serde = { workspace = true, features = ["derive", "rc"] }
