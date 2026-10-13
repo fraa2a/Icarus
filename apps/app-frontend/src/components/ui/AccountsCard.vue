@@ -9,9 +9,7 @@
 			<SpinnerIcon v-else class="animate-spin" />
 			{{ formatMessage(messages.signInToMinecraft) }}
 		</Button>
-		<Button @click="offlineModal?.show()">
-			<PlusIcon /> Add offline account
-		</Button>
+		<Button @click="offlineModal?.show()"> <PlusIcon /> Add offline account </Button>
 	</div>
 	<Accordion
 		v-else
@@ -33,7 +31,9 @@
 					<span class="truncate w-full text-left">{{
 						selectedAccount ? selectedAccount.profile.name : formatMessage(messages.selectAccount)
 					}}</span>
-					<span class="text-secondary text-xs">{{ selectedAccount?.offline ? 'Offline account' : formatMessage(messages.minecraftAccount) }}</span>
+					<span class="text-secondary text-xs">{{
+						selectedAccount?.offline ? 'Offline account' : formatMessage(messages.minecraftAccount)
+					}}</span>
 				</div>
 			</div>
 		</template>

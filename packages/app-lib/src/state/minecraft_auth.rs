@@ -312,7 +312,8 @@ impl Credentials {
         // Use a margin of 5 minutes to give e.g. Minecraft and potentially
         // other operations that depend on a fresh token 5 minutes to complete
         // from now, and deal with some classes of clock skew
-        if self.is_offline() || self.expires > Utc::now() + Duration::minutes(5) {
+        if self.is_offline() || self.expires > Utc::now() + Duration::minutes(5)
+        {
             return Ok(());
         }
 
@@ -703,28 +704,29 @@ impl Serialize for Credentials {
         // thread may be in the most efficient way
         let profile = if self.is_offline() {
             MaybeOnlineMinecraftProfile::Offline(&self.offline_profile)
-        } else { match Handle::try_current().ok() {
-            Some(runtime)
-                if runtime.runtime_flavor() == RuntimeFlavor::CurrentThread =>
-            {
-                runtime.block_on(self.maybe_online_profile())
+        } else {
+            match Handle::try_current().ok() {
+                Some(runtime)
+                    if runtime.runtime_flavor()
+                        == RuntimeFlavor::CurrentThread =>
+                {
+                    runtime.block_on(self.maybe_online_profile())
+                }
+                Some(runtime) => task::block_in_place(|| {
+                    runtime.block_on(self.maybe_online_profile())
+                }),
+                None => tokio::runtime::Builder::new_current_thread()
+                    .enable_all()
+                    .build()
+                    .map_or_else(
+                        |_| {
+                            MaybeOnlineMinecraftProfile::Offline(
+                                &self.offline_profile,
+                            )
+                        },
+                        |runtime| runtime.block_on(self.maybe_online_profile()),
+                    ),
             }
-            Some(runtime) => task::block_in_place(|| {
-                runtime.block_on(self.maybe_online_profile())
-            }),
-            None => tokio::runtime::Builder::new_current_thread()
-                .enable_all()
-                .build()
-                .map_or_else(
-                    |_| {
-                        MaybeOnlineMinecraftProfile::Offline(
-                            &self.offline_profile,
-                        )
-                    },
-                    |runtime| runtime.block_on(self.maybe_online_profile()),
-                ),
-        };
-
         };
 
         let mut ser = serializer.serialize_struct("Credentials", 6)?;
@@ -1694,8 +1696,14 @@ mod offline_tests {
     #[test]
     fn java_offline_uuid_and_case() {
         let notch = Credentials::offline("Notch").unwrap();
-        assert_eq!(notch.offline_profile.id.to_string(), "b50ad385-829d-3141-a216-7e7d7539ba7f");
-        assert_ne!(notch.offline_profile.id, Credentials::offline("notch").unwrap().offline_profile.id);
+        assert_eq!(
+            notch.offline_profile.id.to_string(),
+            "b50ad385-829d-3141-a216-7e7d7539ba7f"
+        );
+        assert_ne!(
+            notch.offline_profile.id,
+            Credentials::offline("notch").unwrap().offline_profile.id
+        );
         assert!(notch.is_offline());
         assert!(notch.require_online().is_err());
         let serialized = serde_json::to_value(&notch).unwrap();
@@ -1708,7 +1716,9 @@ mod offline_tests {
         for name in ["abc", "a_0", "abcdefghijklmnop"] {
             assert!(Credentials::offline(name).is_ok(), "{name}");
         }
-        for name in ["", "ab", "abcdefghijklmnopq", "a b", "a-b", "éab", "abc\n"] {
+        for name in
+            ["", "ab", "abcdefghijklmnopq", "a b", "a-b", "éab", "abc\n"]
+        {
             assert!(Credentials::offline(name).is_err(), "{name}");
         }
     }
