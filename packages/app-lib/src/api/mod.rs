@@ -3,6 +3,7 @@ pub mod cache;
 pub mod debug_info;
 pub mod friends;
 pub mod handler;
+pub mod icarus;
 pub mod instance;
 pub mod jre;
 pub mod logs;

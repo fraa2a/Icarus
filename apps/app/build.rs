@@ -423,6 +423,12 @@ fn main() {
                     ),
             )
             .plugin(
+                "icarus",
+                InlinedPlugin::new()
+                    .commands(&["migration_instances", "import_modrinth", "run_copy"])
+                    .default_permission(DefaultPermissionRule::AllowAllCommands),
+            )
+            .plugin(
                 "worlds",
                 InlinedPlugin::new()
                     .commands(&[
