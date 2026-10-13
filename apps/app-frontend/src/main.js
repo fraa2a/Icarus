@@ -5,12 +5,15 @@ import { VueQueryPlugin } from '@tanstack/vue-query'
 import { createApp } from 'vue'
 
 import App from '@/App.vue'
+import { initializeAccent } from '@/composables/use-accent.ts'
 import { overlayScrollbarsDirective } from '@/directives/overlayScrollbars'
 import { setupErrorReporting } from '@/helpers/error-reporting'
 import { debugStartup, traceStartupStep } from '@/helpers/startup-debug'
 import i18nPlugin from '@/plugins/i18n'
 import i18nDebugPlugin from '@/plugins/i18n-debug'
 import router from '@/routes'
+
+initializeAccent()
 
 debugStartup('Frontend entry module evaluated')
 const app = createApp(App)

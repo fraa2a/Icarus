@@ -2,6 +2,7 @@ use serde::ser::SerializeStruct;
 use serde::{Serialize, Serializer};
 use thiserror::Error;
 
+pub mod accent;
 pub mod auth;
 pub mod import;
 pub mod icarus;

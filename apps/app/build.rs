@@ -9,6 +9,12 @@ fn main() {
         tauri_build::Attributes::new()
             .codegen(tauri_build::CodegenContext::new())
             .plugin(
+                "accent",
+                InlinedPlugin::new()
+                    .commands(&["set_accent_icon"])
+                    .default_permission(DefaultPermissionRule::AllowAllCommands),
+            )
+            .plugin(
                 "auth",
                 InlinedPlugin::new()
                     .commands(&[

@@ -104,6 +104,7 @@
 		"utils:default",
 		"friends:default",
 		"worlds:default",
+		"accent:default",
 		"icarus:default"
 	]
 }
