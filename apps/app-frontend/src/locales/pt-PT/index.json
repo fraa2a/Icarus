@@ -131,21 +131,6 @@
   "app.action-bar.view-logs": {
     "message": "Ver registos"
   },
-  "app.ads-consent.accept": {
-    "message": "Aceitar tudo"
-  },
-  "app.ads-consent.body": {
-    "message": "Os anúncios tornam o Modrinth possível e financiam os pagamentos aos criadores. Os nossos parceiros podem armazenar ou aceder a cookies na aplicação para personalizar anúncios e medir o desempenho."
-  },
-  "app.ads-consent.manage": {
-    "message": "Gerir preferências"
-  },
-  "app.ads-consent.reject": {
-    "message": "Rejeitar tudo"
-  },
-  "app.ads-consent.title": {
-    "message": "A sua privacidade e como os anúncios são financiados pela Modrinth"
-  },
   "app.appearance-settings.compact-mode.description": {
     "message": "Exibir instâncias da biblioteca numa disposição de linhas compacta."
   },
@@ -836,9 +821,6 @@
   "app.nav.sign-in-to-modrinth-account": {
     "message": "Inicie sessão no Modrinth"
   },
-  "app.nav.upgrade-to-modrinth-plus": {
-    "message": "Atualizar para o Modrinth+"
-  },
   "app.navigation.home": {
     "message": "Página inicial"
   },
@@ -977,20 +959,11 @@
   "app.settings.operating-system.macos": {
     "message": "macOS"
   },
-  "app.settings.privacy.ads-consent.intro": {
-    "message": "Os anúncios tornam o Modrinth possível e financiam os pagamentos aos criadores. Os nossos parceiros podem armazenar ou aceder a cookies na aplicação para personalizar anúncios e medir o desempenho."
-  },
   "app.settings.privacy.discord-rich-presence.description": {
     "message": "Mostrar a aplicação Modrinth como a sua atividade atual no Discord. Isto não afeta o Rich Presence adicionado às instâncias pelos mods. É necessário reiniciar a aplicação."
   },
   "app.settings.privacy.discord-rich-presence.title": {
     "message": "Presença avançada no Discord"
-  },
-  "app.settings.privacy.telemetry.description": {
-    "message": "A Modrinth recolhe dados analíticos e de utilização anonimizados para melhorar a experiência dos nossos utilizadores e personalizar a sua experiência. Ao desativar esta opção, está a optar por não participar e os seus dados deixarão de ser recolhidos."
-  },
-  "app.settings.privacy.telemetry.title": {
-    "message": "Telemetria"
   },
   "app.settings.resource-management.always-show-copy-details.description": {
     "message": "Mostrar a ação «Copiar detalhes» enquanto uma instalação estiver na fila ou em execução. Esta ação está sempre disponível para instalações que tenham falhado ou sido interrompidas."

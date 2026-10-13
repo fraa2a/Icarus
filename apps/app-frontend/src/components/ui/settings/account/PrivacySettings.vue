@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import {
-	defineMessages,
-	injectNotificationManager,
-	Toggle,
-	useVIntl,
-} from '@modrinth/ui'
+import { defineMessages, injectNotificationManager, Toggle, useVIntl } from '@modrinth/ui'
 import { ref, watch } from 'vue'
 
 import { get, set } from '@/helpers/settings.ts'
@@ -28,7 +23,7 @@ const messages = defineMessages({
 watch(
 	settings,
 	async () => {
-		await set(settings.value)
+		await set(settings.value).catch(handleError)
 	},
 	{ deep: true },
 )

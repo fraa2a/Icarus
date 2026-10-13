@@ -1008,7 +1008,6 @@ async fn fetch_advanced_with_target(
             req = req.header("Authorization", &creds.session);
         }
 
-
         let result = crate::install::control::download_step(req.send()).await?;
         match result {
             Ok(resp) => {

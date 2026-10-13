@@ -11,7 +11,10 @@ async function helper(name) {
 
 test('analytics cannot be re-enabled by opting in', async () => {
 	const listeners = []
-	globalThis.window = { addEventListener: (...args) => listeners.push(args), removeEventListener() {} }
+	globalThis.window = {
+		addEventListener: (...args) => listeners.push(args),
+		removeEventListener() {},
+	}
 	const analytics = await helper('analytics')
 	analytics.initAnalytics()
 	analytics.optInAnalytics()

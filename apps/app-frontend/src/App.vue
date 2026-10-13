@@ -106,9 +106,7 @@ import { getAccountAppearance, rememberAccountAppearance } from '@/helpers/accou
 import {
 	hide_ads_window,
 	init_ads_window,
-	perform_ads_consent_action,
 	release_ads_window_hold,
-	should_show_ads_consent_popup,
 	take_ads_window_hold,
 } from '@/helpers/ads.js'
 import { debugAnalytics, initAnalytics, trackEvent } from '@/helpers/analytics'
@@ -275,8 +273,6 @@ useAppEvent(
 const popupNotificationManager = new AppPopupNotificationManager()
 providePopupNotificationManager(popupNotificationManager)
 const { addPopupNotification } = popupNotificationManager
-let adsConsentPopupId = null
-useAppEvent('ads_consent_required', handleAdsConsentRequired, appEvents)
 
 const appVersion = getVersion()
 const tauriApiClient = new TauriModrinthClient({
@@ -501,11 +497,6 @@ onMounted(async () => {
 	}
 
 	await useCheckDisableMouseover()
-	try {
-		handleAdsConsentRequired(await should_show_ads_consent_popup())
-	} catch (error) {
-		handleError(error)
-	}
 
 	document.querySelector('body').addEventListener('click', handleClick)
 	document.querySelector('body').addEventListener('auxclick', handleAuxClick)
@@ -559,27 +550,6 @@ const messages = defineMessages({
 		defaultMessage:
 			'Minecraft authentication servers may be down right now. Check your internet connection and try again later.',
 	},
-	adsConsentTitle: {
-		id: 'app.ads-consent.title',
-		defaultMessage: 'Your privacy and how ads support Modrinth',
-	},
-	adsConsentBody: {
-		id: 'app.ads-consent.body',
-		defaultMessage:
-			'Ads make Modrinth possible and fund creator payouts. Our partners may store or access cookies in the app to personalize ads and measure performance.',
-	},
-	adsConsentManage: {
-		id: 'app.ads-consent.manage',
-		defaultMessage: 'Manage preferences',
-	},
-	adsConsentReject: {
-		id: 'app.ads-consent.reject',
-		defaultMessage: 'Reject all',
-	},
-	adsConsentAccept: {
-		id: 'app.ads-consent.accept',
-		defaultMessage: 'Accept all',
-	},
 	home: {
 		id: 'app.nav.home',
 		defaultMessage: 'Home',
@@ -632,10 +602,6 @@ const messages = defineMessages({
 		id: 'app.restarting',
 		defaultMessage: 'Restarting...',
 	},
-	upgradeToModrinthPlus: {
-		id: 'app.nav.upgrade-to-modrinth-plus',
-		defaultMessage: 'Upgrade to Modrinth+',
-	},
 	news: {
 		id: 'app.news.title',
 		defaultMessage: 'News',
@@ -649,55 +615,6 @@ const messages = defineMessages({
 		defaultMessage: 'Playing as',
 	},
 })
-
-function handleAdsConsentRequired(required) {
-	if (!required) {
-		if (adsConsentPopupId !== null) {
-			popupNotificationManager.removeNotification(adsConsentPopupId)
-			adsConsentPopupId = null
-		}
-		return
-	}
-
-	if (
-		adsConsentPopupId !== null &&
-		popupNotificationManager.getNotifications().some((item) => item.id === adsConsentPopupId)
-	) {
-		return
-	}
-
-	const notification = addPopupNotification({
-		contentType: 'standard',
-		title: formatMessage(messages.adsConsentTitle),
-		text: formatMessage(messages.adsConsentBody),
-		type: 'info',
-		hideIcon: true,
-		autoCloseMs: null,
-		dismissible: false,
-		buttons: [
-			{
-				label: formatMessage(messages.adsConsentManage),
-				action: () => perform_ads_consent_action('manage').catch(handleError),
-				color: 'standard',
-				keepOpen: true,
-			},
-			{
-				label: formatMessage(messages.adsConsentReject),
-				action: () => perform_ads_consent_action('reject').catch(handleError),
-				color: 'brand',
-				keepOpen: true,
-			},
-			{
-				label: formatMessage(messages.adsConsentAccept),
-				action: () => perform_ads_consent_action('accept').catch(handleError),
-				color: 'brand',
-				keepOpen: true,
-			},
-		],
-	})
-
-	adsConsentPopupId = notification.id
-}
 
 async function setupApp() {
 	tags.initialize()
@@ -1458,7 +1375,6 @@ const modrinthAccountMenuOptions = computed(() => [
 		action: () => logOut(),
 	},
 ])
-
 
 watch(
 	[stateInitialized, showAd, adConsentAvailable],
