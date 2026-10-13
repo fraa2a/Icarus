@@ -20,6 +20,7 @@ fn main() {
                     .commands(&[
                         "check_reachable",
                         "login",
+                        "create_offline_user",
                         "remove_user",
                         "get_default_user",
                         "set_default_user",
@@ -426,6 +427,12 @@ fn main() {
                     .default_permission(
                         DefaultPermissionRule::AllowAllCommands,
                     ),
+            )
+            .plugin(
+                "icarus",
+                InlinedPlugin::new()
+                    .commands(&["migration_instances", "import_modrinth", "run_copy"])
+                    .default_permission(DefaultPermissionRule::AllowAllCommands),
             )
             .plugin(
                 "worlds",
