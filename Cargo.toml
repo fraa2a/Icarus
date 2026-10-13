@@ -169,6 +169,7 @@ rdkafka = { version = "0.36.2", features = ["cmake-build"] }
 redis = "1.4.1"
 regex = "1.12.2"
 reqwest = { version = "0.12.24", default-features = false }
+rsa = "0.9.8"
 rgb = "0.8.52"
 rust_decimal = { version = "1.39.0", features = ["serde-with-float", "serde-with-str"] }
 rust_iso3166 = "0.1.14"
