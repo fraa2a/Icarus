@@ -123,6 +123,7 @@ ts-rs = { workspace = true, features = [
 ], optional = true }
 url = { workspace = true, features = ["serde"] }
 urlencoding = { workspace = true }
+md5 = { workspace = true }
 uuid = { workspace = true, features = ["serde", "v4"] }
 whoami = { workspace = true }
 zbus = { workspace = true }

@@ -99,3 +99,11 @@ pub async fn users() -> crate::Result<Vec<Credentials>> {
     let users = Credentials::get_all(&state.pool).await?;
     Ok(users.into_iter().map(|x| x.1).collect())
 }
+
+/// Creates and selects an offline account stored alongside Microsoft accounts.
+pub async fn create_offline_user(name: &str) -> crate::Result<Credentials> {
+    let credentials = Credentials::offline(name)?;
+    let state = State::get().await?;
+    credentials.upsert(&state.pool).await?;
+    Ok(credentials)
+}

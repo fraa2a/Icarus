@@ -265,6 +265,44 @@ impl OnlineProfileCacheIntent {
 }
 
 impl Credentials {
+    /// Creates a Java-compatible offline identity without authenticating.
+    pub fn offline(name: &str) -> crate::Result<Self> {
+        if !(3..=16).contains(&name.len())
+            || !name.bytes().all(|c| c.is_ascii_alphanumeric() || c == b'_')
+        {
+            return Err(ErrorKind::OtherError(
+                "Offline usernames must be 3–16 ASCII letters, numbers, or underscores".into(),
+            ).as_error());
+        }
+        let mut bytes = md5::compute(format!("OfflinePlayer:{name}")).0;
+        bytes[6] = (bytes[6] & 0x0f) | 0x30;
+        bytes[8] = (bytes[8] & 0x3f) | 0x80;
+        Ok(Self {
+            offline_profile: MinecraftProfile {
+                id: Uuid::from_bytes(bytes),
+                name: name.to_owned(),
+                ..MinecraftProfile::default()
+            },
+            access_token: "OFFLINE".into(),
+            refresh_token: String::new(),
+            expires: DateTime::<Utc>::MAX_UTC,
+            active: true,
+        })
+    }
+
+    pub fn is_offline(&self) -> bool {
+        self.access_token == "OFFLINE" && self.refresh_token.is_empty()
+    }
+
+    pub fn require_online(&self) -> crate::Result<()> {
+        if self.is_offline() {
+            return Err(ErrorKind::OtherError(
+                "Offline accounts cannot change Minecraft skins or capes. Select a Microsoft account.".into(),
+            ).as_error());
+        }
+        Ok(())
+    }
+
     /// Refreshes the authentication tokens for this user if they are expired, or
     /// very close to expiration.
     async fn refresh(
@@ -274,7 +312,7 @@ impl Credentials {
         // Use a margin of 5 minutes to give e.g. Minecraft and potentially
         // other operations that depend on a fresh token 5 minutes to complete
         // from now, and deal with some classes of clock skew
-        if self.expires > Utc::now() + Duration::minutes(5) {
+        if self.is_offline() || self.expires > Utc::now() + Duration::minutes(5) {
             return Ok(());
         }
 
@@ -351,6 +389,9 @@ impl Credentials {
         &self,
         cache_intent: OnlineProfileCacheIntent,
     ) -> Option<Arc<MinecraftProfile>> {
+        if self.is_offline() {
+            return None;
+        }
         let max_age = cache_intent.max_age();
         let stale_profile = {
             let mut profile_cache = PROFILE_CACHE.lock().await;
@@ -660,7 +701,9 @@ impl Serialize for Credentials {
         // Opportunistically hydrate the profile with its online data if possible for frontend
         // consumption, transparently handling all the possible Tokio runtime states the current
         // thread may be in the most efficient way
-        let profile = match Handle::try_current().ok() {
+        let profile = if self.is_offline() {
+            MaybeOnlineMinecraftProfile::Offline(&self.offline_profile)
+        } else { match Handle::try_current().ok() {
             Some(runtime)
                 if runtime.runtime_flavor() == RuntimeFlavor::CurrentThread =>
             {
@@ -682,12 +725,15 @@ impl Serialize for Credentials {
                 ),
         };
 
-        let mut ser = serializer.serialize_struct("Credentials", 5)?;
+        };
+
+        let mut ser = serializer.serialize_struct("Credentials", 6)?;
         ser.serialize_field("profile", &*profile)?;
         ser.serialize_field("access_token", &self.access_token)?;
         ser.serialize_field("refresh_token", &self.refresh_token)?;
         ser.serialize_field("expires", &self.expires)?;
         ser.serialize_field("active", &self.active)?;
+        ser.serialize_field("offline", &self.is_offline())?;
         ser.end()
     }
 }
@@ -1639,4 +1685,31 @@ fn generate_oauth_challenge() -> String {
 
     let bytes: Vec<u8> = (0..64).map(|_| rng.r#gen::<u8>()).collect();
     bytes.iter().map(|byte| format!("{byte:02x}")).collect()
+}
+
+#[cfg(test)]
+mod offline_tests {
+    use super::*;
+
+    #[test]
+    fn java_offline_uuid_and_case() {
+        let notch = Credentials::offline("Notch").unwrap();
+        assert_eq!(notch.offline_profile.id.to_string(), "b50ad385-829d-3141-a216-7e7d7539ba7f");
+        assert_ne!(notch.offline_profile.id, Credentials::offline("notch").unwrap().offline_profile.id);
+        assert!(notch.is_offline());
+        assert!(notch.require_online().is_err());
+        let serialized = serde_json::to_value(&notch).unwrap();
+        assert_eq!(serialized["offline"], true);
+        assert_eq!(serialized["profile"]["name"], "Notch");
+    }
+
+    #[test]
+    fn offline_username_boundaries() {
+        for name in ["abc", "a_0", "abcdefghijklmnop"] {
+            assert!(Credentials::offline(name).is_ok(), "{name}");
+        }
+        for name in ["", "ab", "abcdefghijklmnopq", "a b", "a-b", "éab", "abc\n"] {
+            assert!(Credentials::offline(name).is_err(), "{name}");
+        }
+    }
 }
