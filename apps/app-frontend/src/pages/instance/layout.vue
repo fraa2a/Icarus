@@ -4,6 +4,7 @@
 			:class="['p-6 pr-2 pb-4', { 'shrink-0': isFixedRender }]"
 			@contextmenu.prevent.stop="(event) => handleRightClick(event)"
 		>
+			<RunCopyModal :key="instance.id" ref="runCopyModal" :instance="instance" :playing="playing" />
 			<ExportModal v-if="!instance.quarantined" ref="exportModal" :instance="instance" />
 			<ConfirmDeleteInstanceModal
 				ref="deleteConfirmModal"
@@ -46,6 +47,7 @@
 				@repair="() => repairInstance()"
 				@stop="() => stopInstance('InstancePage')"
 				@play="() => startInstance('InstancePage')"
+				@run-copy="() => runCopyModal?.show()"
 				@play-server="() => handlePlayServer()"
 				@settings="() => settingsModal?.show()"
 				@open-folder="() => instance && showInstanceInFolder(instance.id)"
@@ -117,6 +119,7 @@ import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 
 import ExportModal from '@/components/ui/ExportModal.vue'
 import ConfirmDeleteInstanceModal from '@/components/ui/modal/ConfirmDeleteInstanceModal.vue'
+import RunCopyModal from '@/components/ui/modal/RunCopyModal.vue'
 import UpdateToPlayModal from '@/components/ui/modal/UpdateToPlayModal.vue'
 import SharedInstanceInstallModal from '@/components/ui/shared-instances/shared-instance-install-modal/index.vue'
 import SharedInstanceUpdateModal from '@/components/ui/shared-instances/SharedInstanceUpdateModal.vue'
@@ -361,6 +364,7 @@ const loading = ref(false)
 const checkingSharedInstanceLaunch = ref(false)
 const subpagePending = ref(false)
 const stopping = ref(false)
+const runCopyModal = ref<InstanceType<typeof RunCopyModal>>()
 const exportModal = ref<InstanceType<typeof ExportModal>>()
 const updateToPlayModal = ref<InstanceType<typeof UpdateToPlayModal>>()
 const sharedInstanceUpdateModal = ref<InstanceType<typeof SharedInstanceUpdateModal>>()
