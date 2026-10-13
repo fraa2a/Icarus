@@ -55,10 +55,10 @@ pub async fn run(
 
 /// Launch an independent instance using an already selected account.
 pub async fn run_as_account(
-	instance_id: &str,
-	credentials: Credentials,
+    instance_id: &str,
+    credentials: Credentials,
 ) -> crate::Result<ProcessMetadata> {
-	run_credentials(instance_id, &credentials, QuickPlayType::None).await
+    run_credentials(instance_id, &credentials, QuickPlayType::None).await
 }
 
 #[tracing::instrument(skip(credentials))]
