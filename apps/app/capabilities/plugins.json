@@ -103,6 +103,7 @@
 		"users:default",
 		"utils:default",
 		"friends:default",
-		"worlds:default"
+		"worlds:default",
+		"accent:default"
 	]
 }
