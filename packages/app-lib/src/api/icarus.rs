@@ -117,7 +117,10 @@ pub async fn migration_instances() -> crate::Result<Vec<MigrationInstance>> {
 
 fn ensure_source_stopped(root: &Path) -> crate::Result<()> {
     let system = sysinfo::System::new_all();
-    if system.processes().values().any(|process| {
+    if system.processes().iter().any(|(pid, process)| {
+        if pid.as_u32() == std::process::id() {
+            return false;
+        }
         let name = process.name().to_string_lossy().to_lowercase();
         name.contains("modrinth")
             || process.cwd().is_some_and(|cwd| cwd.starts_with(root))
@@ -339,10 +342,15 @@ pub async fn import_modrinth(
                 } else {
                     "DELETE FROM profiles WHERE path=?"
                 };
-                sqlx::query(query)
+                let deleted = sqlx::query(query)
                     .bind(&candidate.id)
                     .execute(&writable)
                     .await?;
+                if deleted.rows_affected() != 1 {
+                    return Err(input(
+                        "The source instance changed during removal",
+                    ));
+                }
                 writable.close().await;
                 Ok::<_, crate::Error>(())
             }
@@ -446,6 +454,18 @@ mod tests {
         copy_files(source.path(), destination.path(), true)
             .await
             .unwrap();
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::MetadataExt;
+            assert_ne!(
+                std::fs::metadata(source.path().join("options.txt"))
+                    .unwrap()
+                    .ino(),
+                std::fs::metadata(destination.path().join("options.txt"))
+                    .unwrap()
+                    .ino()
+            );
+        }
         fs::write(destination.path().join("options.txt"), b"copy")
             .await
             .unwrap();
