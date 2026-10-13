@@ -1,6 +1,11 @@
 <template>
 	<Transition name="splash-fade" @after-leave="onAfterLeave">
-		<div v-if="!doneLoading" class="splash-screen" :class="`${theme.active}-mode`" :style="accentStyle(accent.active, theme.active === 'light')">
+		<div
+			v-if="!doneLoading"
+			class="splash-screen"
+			:class="`${theme.active}-mode`"
+			:style="accentStyle(accent.active, theme.active === 'light')"
+		>
 			<div class="app-logo-wrapper" data-tauri-drag-region>
 				<IcarusLogo class="app-logo" />
 				<ProgressBar class="loading-bar" :progress="Math.min(loadingProgress, 100)" />

@@ -41,11 +41,11 @@ export function accentStyle(preset: AccentPreset, light: boolean, tinted = false
 		'--splash-overlay': light ? 'rgba(255, 255, 255, 0.3)' : 'rgba(22, 24, 28, 0.64)',
 	}
 	if (tinted) {
-		const base = light ? '#ffffff' : '#16181c'
-		values['--color-bg'] = `color-mix(in srgb, ${color} 5%, ${base})`
-		values['--color-raised-bg'] = `color-mix(in srgb, ${color} 5%, ${light ? '#f2f4f7' : '#202329'})`
-		values['--color-surface-1'] = values['--color-bg']
-		values['--color-surface-2'] = values['--color-raised-bg']
+		const styles = getComputedStyle(document.documentElement)
+		for (const surface of ['1', '1-5', '2', '2-5', '3', '4']) {
+			const key = `--surface-${surface}`
+			values[key] = `color-mix(in srgb, ${color} 5%, ${styles.getPropertyValue(key).trim()})`
+		}
 	}
 	return values
 }
@@ -59,18 +59,41 @@ export function initializeAccent() {
 	initialized = true
 	const theme = useTheme()
 	let previousKeys: string[] = []
-	watch([active, tint, () => theme.active], ([preset, tinted, colorTheme]) => {
-		const html = document.documentElement
-		for (const key of previousKeys) html.style.removeProperty(key)
-		const values = accentStyle(preset, colorTheme === 'light', tinted)
-		for (const [key, value] of Object.entries(values)) html.style.setProperty(key, value)
-		previousKeys = Object.keys(values)
-	}, { immediate: true, flush: 'sync' })
-	watch(active, () => { void syncAccentIcon().catch(console.warn) }, { immediate: true })
+	watch(
+		[active, tint, () => theme.active],
+		([preset, tinted, colorTheme]) => {
+			const html = document.documentElement
+			for (const key of previousKeys) html.style.removeProperty(key)
+			const values = accentStyle(preset, colorTheme === 'light', tinted)
+			for (const [key, value] of Object.entries(values)) html.style.setProperty(key, value)
+			previousKeys = Object.keys(values)
+		},
+		{ immediate: true, flush: 'sync' },
+	)
+	watch(
+		active,
+		() => {
+			void syncAccentIcon().catch(console.warn)
+		},
+		{ immediate: true },
+	)
 	watch([preferred, backgroundTint], ([preset, tinted]) => {
-		try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ preset, tint: tinted })) } catch { /* Storage can be unavailable. */ }
+		try {
+			localStorage.setItem(STORAGE_KEY, JSON.stringify({ preset, tint: tinted }))
+		} catch {
+			/* Storage can be unavailable. */
+		}
 	})
 }
 
-const accent = reactive({ preferred, backgroundTint, preview, active, tint, options: ACCENT_PRESETS })
-export function useAccent() { return accent }
+const accent = reactive({
+	preferred,
+	backgroundTint,
+	preview,
+	active,
+	tint,
+	options: ACCENT_PRESETS,
+})
+export function useAccent() {
+	return accent
+}

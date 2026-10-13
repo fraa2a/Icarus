@@ -24,7 +24,11 @@ const accent = useAccent()
 const { formatMessage } = useVIntl()
 const accentMessages = defineMessages({
 	title: { id: 'app.appearance.accent.title', defaultMessage: 'Accent color' },
-	description: { id: 'app.appearance.accent.description', defaultMessage: 'Personalize buttons, highlights, the splash screen, and the Icarus icon on this device.' },
+	description: {
+		id: 'app.appearance.accent.description',
+		defaultMessage:
+			'Personalize buttons, highlights, the splash screen, and the Icarus icon on this device.',
+	},
 	tint: { id: 'app.appearance.accent.tint', defaultMessage: 'Tint backgrounds with accent color' },
 	purple: { id: 'app.appearance.accent.purple', defaultMessage: 'Purple' },
 	green: { id: 'app.appearance.accent.green', defaultMessage: 'Green' },
@@ -130,7 +134,9 @@ watch(
 
 watch(
 	[() => current.value.accent, () => current.value.backgroundTint],
-	([preset, tint]) => { accent.preview = { preset, tint } },
+	([preset, tint]) => {
+		accent.preview = { preset, tint }
+	},
 	{ immediate: true },
 )
 
@@ -192,16 +198,33 @@ provideAppearanceSettings({
 	<AppearanceSettingsLayout>
 		<template #after-theme>
 			<section class="mt-8 border-0 border-t border-solid border-divider pt-6">
-				<h2 id="accent-color-label" class="m-0 text-xl font-semibold text-contrast">{{ formatMessage(accentMessages.title) }}</h2>
+				<h2 id="accent-color-label" class="m-0 text-xl font-semibold text-contrast">
+					{{ formatMessage(accentMessages.title) }}
+				</h2>
 				<p class="m-0 mt-1 text-secondary">{{ formatMessage(accentMessages.description) }}</p>
 				<div class="mt-4 flex flex-wrap gap-2" role="group" aria-labelledby="accent-color-label">
-					<button v-for="preset in accentOptions" :key="preset" type="button" class="accent-option" :aria-pressed="current.accent === preset" @click="current.accent = preset">
-						<span class="accent-swatch" :style="{ background: ACCENT_COLORS[preset][theme.active === 'light' ? 'light' : 'dark'] }" aria-hidden="true" />
+					<button
+						v-for="preset in accentOptions"
+						:key="preset"
+						type="button"
+						class="accent-option"
+						:aria-pressed="current.accent === preset"
+						@click="current.accent = preset"
+					>
+						<span
+							class="accent-swatch"
+							:style="{
+								background: ACCENT_COLORS[preset][theme.active === 'light' ? 'light' : 'dark'],
+							}"
+							aria-hidden="true"
+						/>
 						{{ formatMessage(accentMessages[preset]) }}
 					</button>
 				</div>
 				<div class="mt-6 flex items-center justify-between gap-4">
-					<label for="accent-background-tint" class="font-semibold text-contrast">{{ formatMessage(accentMessages.tint) }}</label>
+					<label for="accent-background-tint" class="font-semibold text-contrast">{{
+						formatMessage(accentMessages.tint)
+					}}</label>
 					<Toggle id="accent-background-tint" v-model="current.backgroundTint" />
 				</div>
 			</section>
@@ -223,7 +246,17 @@ provideAppearanceSettings({
 	font-weight: 600;
 	cursor: pointer;
 }
-.accent-option[aria-pressed='true'] { border-color: var(--color-brand); background: var(--color-brand-highlight); }
-.accent-option:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 3px; }
-.accent-swatch { width: 1rem; height: 1rem; border-radius: 50%; }
+.accent-option[aria-pressed='true'] {
+	border-color: var(--color-brand);
+	background: var(--color-brand-highlight);
+}
+.accent-option:focus-visible {
+	outline: 2px solid var(--color-brand);
+	outline-offset: 3px;
+}
+.accent-swatch {
+	width: 1rem;
+	height: 1rem;
+	border-radius: 50%;
+}
 </style>

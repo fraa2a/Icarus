@@ -29,7 +29,8 @@ fn recolor_icon(image: &mut RgbaImage, color: [u8; 3]) {
         }
         let shade = f32::from(r.max(g).max(b)) / 255.0;
         for channel in 0..3 {
-            pixel.0[channel] = (f32::from(color[channel]) * shade).round() as u8;
+            pixel.0[channel] =
+                (f32::from(color[channel]) * shade).round() as u8;
         }
     }
 }
@@ -40,11 +41,10 @@ pub fn set_accent_icon<R: tauri::Runtime>(
     preset: String,
 ) -> Result<(), String> {
     let color = preset_color(&preset).ok_or("Unknown accent preset")?;
-    let mut icon = image::load_from_memory(include_bytes!(
-        "../../icons/128x128@2x.png"
-    ))
-    .map_err(|error| error.to_string())?
-    .to_rgba8();
+    let mut icon =
+        image::load_from_memory(include_bytes!("../../icons/128x128@2x.png"))
+            .map_err(|error| error.to_string())?
+            .to_rgba8();
     recolor_icon(&mut icon, color);
     let tauri_icon = tauri::image::Image::new_owned(
         icon.as_raw().clone(),

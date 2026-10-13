@@ -179,6 +179,30 @@
   "app.appearance-settings.unknown-pack-warning.title": {
     "message": "Warn me before installing unknown modpacks"
   },
+  "app.appearance.accent.blue": {
+    "message": "Blue"
+  },
+  "app.appearance.accent.description": {
+    "message": "Personalize buttons, highlights, the splash screen, and the Icarus icon on this device."
+  },
+  "app.appearance.accent.green": {
+    "message": "Green"
+  },
+  "app.appearance.accent.orange": {
+    "message": "Orange"
+  },
+  "app.appearance.accent.purple": {
+    "message": "Purple"
+  },
+  "app.appearance.accent.rose": {
+    "message": "Rose"
+  },
+  "app.appearance.accent.tint": {
+    "message": "Tint backgrounds with accent color"
+  },
+  "app.appearance.accent.title": {
+    "message": "Accent color"
+  },
   "app.auth-servers.unreachable.body": {
     "message": "Minecraft authentication servers may be down right now. Check your internet connection and try again later."
   },
