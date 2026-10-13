@@ -30,3 +30,11 @@ pnpm app:dev
 ```
 
 You should now have a development build of the app running with hot-reloading enabled. Any changes you make to the code will automatically refresh the app.
+
+## Icarus updates
+
+The `Icarus release` workflow builds signed bundles on GitHub-hosted Linux, Windows, and macOS runners. Set the repository secrets `TAURI_PRIVATE_KEY` and `TAURI_KEY_PASSWORD` to the private updater key and its passphrase. The matching public key is stored in `tauri-release.conf.json`.
+
+Run the workflow manually to build and verify the bundles without publishing. To publish, push a `vMAJOR.MINOR.PATCH` tag matching the upstream app version. The workflow sets the app's build version from that tag, verifies every update signature, and publishes the installers and `latest.json` together. Prerelease tags publish prereleases without changing the stable updater endpoint.
+
+Updates are served from [Icarus GitHub Releases](https://github.com/fraa2a/Icarus/releases). Windows bundles currently have an updater signature without an Authenticode certificate; macOS bundles are not notarized. A build containing the Icarus public key must be installed manually before it can accept Icarus updates.

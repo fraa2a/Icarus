@@ -1,0 +1,266 @@
+name: Icarus release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: icarus-release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  TURBO_TELEMETRY_DISABLED: '1'
+  SQLX_OFFLINE: 'true'
+  SHARP_IGNORE_GLOBAL_LIBVIPS: '1'
+
+jobs:
+  build:
+    if: github.repository == 'fraa2a/Icarus'
+    runs-on: ${{ matrix.platform }}
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: ubuntu-24.04
+            target: x86_64-unknown-linux-gnu
+            bundles: appimage,deb,rpm
+          - platform: windows-2022
+            target: x86_64-pc-windows-msvc
+            bundles: nsis
+          - platform: macos-15
+            target: universal-apple-darwin
+            bundles: app,dmg
+    steps:
+      - name: Check out code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Setup Rust toolchain
+        uses: actions-rust-lang/setup-rust-toolchain@166cdcfd11aee3cb47222f9ddb555ce30ddb9659 # v1.17.0
+        with:
+          rustflags: ''
+          target: ${{ runner.os == 'macOS' && 'x86_64-apple-darwin,aarch64-apple-darwin' || matrix.target }}
+
+      - name: Setup Java
+        uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5.6.0
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Install Linux build dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake libcurl4-openssl-dev libwebkit2gtk-4.1-dev libayatana-appindicator3-dev librsvg2-dev libfuse2
+
+      - name: Free Linux disk space
+        if: runner.os == 'Linux'
+        run: sudo rm -rf /usr/local/lib/android /usr/local/.ghcup /opt/hostedtoolcache/CodeQL /usr/share/swift
+
+      - name: Set release version and app environment
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          import os
+          import re
+          from pathlib import Path
+
+          if os.environ['GITHUB_REF_TYPE'] == 'tag':
+              tag = os.environ['GITHUB_REF_NAME']
+              if not re.fullmatch(r'v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?', tag):
+                  raise SystemExit('Release tags must use vMAJOR.MINOR.PATCH, optionally with a prerelease suffix')
+              version = tag[1:]
+              for name in ('apps/app/Cargo.toml', 'packages/app-lib/Cargo.toml'):
+                  path = Path(name)
+                  text, count = re.subn(r'^version = "[^"]+"', f'version = "{version}"', path.read_text(), count=1, flags=re.M)
+                  if count != 1:
+                      raise SystemExit(f'Cannot set version in {name}')
+                  path.write_text(text)
+              path = Path('apps/app-frontend/package.json')
+              package = json.loads(path.read_text())
+              package['version'] = version
+              path.write_text(json.dumps(package, indent='\t') + '\n')
+
+          Path('packages/app-lib/.env').write_bytes(Path('packages/app-lib/.env.prod').read_bytes())
+          PY
+
+      - name: Install app dependencies
+        run: pnpm --filter @modrinth/monorepo --filter @modrinth/app... install --frozen-lockfile
+
+      - name: Build signed app bundles
+        shell: bash
+        run: |
+          if [ -z "$TAURI_SIGNING_PRIVATE_KEY" ]; then
+            echo '::error::Set the TAURI_PRIVATE_KEY repository secret before building updates'
+            exit 1
+          fi
+          pnpm --filter=@modrinth/app run tauri build --config tauri-release.conf.json --target ${{ matrix.target }} --bundles ${{ matrix.bundles }}
+        env:
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
+          TAURI_BUNDLER_DMG_IGNORE_CI: 'true'
+
+      - name: Upload signed bundles
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: icarus-${{ matrix.target }}
+          if-no-files-found: error
+          retention-days: 7
+          path: |
+            target/${{ matrix.target }}/release/bundle/**/*.AppImage*
+            target/${{ matrix.target }}/release/bundle/**/*.deb
+            target/${{ matrix.target }}/release/bundle/**/*.rpm
+            target/${{ matrix.target }}/release/bundle/**/*.dmg
+            target/${{ matrix.target }}/release/bundle/**/*.app.tar.gz*
+            target/${{ matrix.target }}/release/bundle/**/*-setup.exe*
+            target/${{ matrix.target }}/release/bundle/**/*.nsis.zip*
+
+  verify:
+    needs: build
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Download signed bundles
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          pattern: icarus-*
+          path: bundles
+
+      - name: Install signature verifier
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y minisign
+
+      - name: Verify signatures and generate update manifest
+        run: |
+          python - <<'PY'
+          import base64
+          import json
+          import os
+          import shutil
+          import subprocess
+          from datetime import datetime, timezone
+          from pathlib import Path
+          from urllib.parse import quote
+
+          config = json.loads(Path('apps/app/tauri-release.conf.json').read_text())
+          public_key = Path('updater.pub')
+          public_key.write_bytes(base64.b64decode(config['plugins']['updater']['pubkey'], validate=True))
+          bundles = Path('bundles')
+          assets = Path('release-assets')
+          assets.mkdir()
+          for path in bundles.rglob('*'):
+              if path.is_file():
+                  destination = assets / path.name
+                  if destination.exists():
+                      raise SystemExit(f'Duplicate release asset: {path.name}')
+                  shutil.copyfile(path, destination)
+
+          tag = os.environ['GITHUB_REF_NAME']
+          version = tag[1:] if os.environ['GITHUB_REF_TYPE'] == 'tag' else '1.0.0-local'
+          base_url = f'https://github.com/{os.environ["GITHUB_REPOSITORY"]}/releases/download/{quote(tag, safe="")}/'
+
+          def find_one(pattern):
+              matches = list(assets.glob(pattern))
+              if len(matches) != 1:
+                  raise SystemExit(f'Expected one {pattern} asset, found {len(matches)}')
+              return matches[0]
+
+          platforms = {}
+          for targets, pattern, installers in (
+              (('linux-x86_64',), '*.AppImage.tar.gz', ('*.AppImage', '*.deb', '*.rpm')),
+              (('windows-x86_64',), '*.nsis.zip', ('*-setup.exe',)),
+              (('darwin-x86_64', 'darwin-aarch64'), '*.app.tar.gz', ('*.dmg',)),
+          ):
+              bundle = find_one(pattern)
+              signature = bundle.with_name(bundle.name + '.sig').read_text().strip()
+              decoded_signature = Path('updater.sig')
+              decoded_signature.write_bytes(base64.b64decode(signature, validate=True))
+              subprocess.run(['minisign', '-Vm', str(bundle), '-p', str(public_key), '-x', str(decoded_signature)], check=True)
+              entry = {
+                  'signature': signature,
+                  'url': base_url + quote(bundle.name, safe=''),
+                  'install_urls': [base_url + quote(find_one(pattern).name, safe='') for pattern in installers],
+              }
+              for target in targets:
+                  platforms[target] = entry
+
+          manifest = {
+              'version': version,
+              'notes': '',
+              'pub_date': datetime.now(timezone.utc).isoformat().replace('+00:00', 'Z'),
+              'platforms': platforms,
+          }
+          (assets / 'latest.json').write_text(json.dumps(manifest, indent=2) + '\n')
+          print(f'Verified {len(platforms)} update targets for {version}')
+          PY
+
+      - name: Upload verified release assets
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: icarus-verified-release
+          path: release-assets/*
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    needs: verify
+    if: github.event_name == 'push' && github.ref_type == 'tag'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      RELEASE_TAG: ${{ github.ref_name }}
+    steps:
+      - name: Download verified release assets
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: icarus-verified-release
+          path: release-assets
+
+      - name: Prepare draft release
+        run: |
+          if gh release view "$RELEASE_TAG" --json isDraft > release-state.json; then
+            if ! jq -e '.isDraft == true' release-state.json; then
+              echo '::error::This release is already published; refusing to replace its signed assets'
+              exit 1
+            fi
+          else
+            gh release create "$RELEASE_TAG" --verify-tag --draft --title "Icarus ${RELEASE_TAG#v}" --generate-notes
+          fi
+          gh release view "$RELEASE_TAG" --json body --jq '.body' > release-notes.md
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          path = Path('release-assets/latest.json')
+          manifest = json.loads(path.read_text())
+          manifest['notes'] = Path('release-notes.md').read_text()
+          path.write_text(json.dumps(manifest, indent=2) + '\n')
+          PY
+          gh release upload "$RELEASE_TAG" release-assets/* --clobber
+
+      - name: Publish complete release
+        run: |
+          if [[ "$RELEASE_TAG" == *-* ]]; then
+            gh release edit "$RELEASE_TAG" --draft=false --prerelease --latest=false
+          else
+            gh release edit "$RELEASE_TAG" --draft=false --prerelease=false --latest
+          fi
