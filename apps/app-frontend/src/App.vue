@@ -9,7 +9,6 @@ import {
 	VerboseLoggingFeature,
 } from '@modrinth/api-client'
 import {
-	ArrowBigUpDashIcon,
 	ArrowLeftRightIcon,
 	ChevronLeftIcon,
 	ChevronRightIcon,
@@ -22,7 +21,6 @@ import {
 	PlusIcon,
 	RefreshCwIcon,
 	RightArrowIcon,
-	ServerStackIcon,
 	SettingsIcon,
 	ShirtIcon,
 	SpinnerIcon,
@@ -57,7 +55,6 @@ import {
 	TooltipDirective,
 	useDebugLogger,
 	useFormatBytes,
-	useHostingIntercom,
 	UserRoleIcon,
 	useVIntl,
 } from '@modrinth/ui'
@@ -79,7 +76,6 @@ import AppActionBar from '@/components/ui/AppActionBar.vue'
 import Breadcrumbs from '@/components/ui/Breadcrumbs.vue'
 import ErrorModal from '@/components/ui/ErrorModal.vue'
 import FriendsList from '@/components/ui/friends/FriendsList.vue'
-import HostingUpdateRequired from '@/components/ui/HostingUpdateRequired.vue'
 import IcarusLogo from '@/components/ui/IcarusLogo.vue'
 import AddServerToInstanceModal from '@/components/ui/install_flow/AddServerToInstanceModal.vue'
 import UnknownPackWarningModal from '@/components/ui/install_flow/UnknownPackWarningModal.vue'
@@ -93,12 +89,9 @@ import ModrinthAccountRequiredModal from '@/components/ui/modal/ModrinthAccountR
 import UpdateToPlayModal from '@/components/ui/modal/UpdateToPlayModal.vue'
 import NavButton from '@/components/ui/NavButton.vue'
 import OnboardingChecklist from '@/components/ui/onboarding-checklist/index.vue'
-import PrideFundraiserBanner from '@/components/ui/PrideFundraiserBanner.vue'
-import PromotionWrapper from '@/components/ui/PromotionWrapper.vue'
 import QuickInstanceSwitcher from '@/components/ui/QuickInstanceSwitcher.vue'
 import SharedInstanceInviteHandler from '@/components/ui/shared-instances/shared-instance-invite-handler/index.vue'
 import SplashScreen from '@/components/ui/SplashScreen.vue'
-import SurveyPopup from '@/components/ui/SurveyPopup.vue'
 import WindowControls from '@/components/ui/WindowControls.vue'
 import { useCheckDisableMouseover } from '@/composables/macCssFix.js'
 import { useAppEvent } from '@/composables/use-app-event'
@@ -113,9 +106,7 @@ import { getAccountAppearance, rememberAccountAppearance } from '@/helpers/accou
 import {
 	hide_ads_window,
 	init_ads_window,
-	perform_ads_consent_action,
 	release_ads_window_hold,
-	should_show_ads_consent_popup,
 	take_ads_window_hold,
 } from '@/helpers/ads.js'
 import { debugAnalytics, initAnalytics, trackEvent } from '@/helpers/analytics'
@@ -247,8 +238,6 @@ updateHistoryNavigationState()
 
 const APP_LEFT_NAV_WIDTH = '4rem'
 const APP_SIDEBAR_WIDTH = 300
-const INTERCOM_BUBBLE_DEFAULT_PADDING = 20
-const PRIDE_FUNDRAISER_END_DATE = new Date('2026-07-01T00:00:00Z').getTime()
 const credentials = ref()
 const storedModrinthAccounts = ref([])
 let credentialsRefreshId = 0
@@ -266,36 +255,6 @@ const forceSidebar = computed(
 		route.path.startsWith('/user'),
 )
 const sidebarVisible = computed(() => sidebarToggled.value || forceSidebar.value)
-const hostingRouteActive = computed(() => route.path.startsWith('/hosting'))
-const hostingUpdateRequired = computed(
-	() =>
-		hostingRouteActive.value &&
-		!!appUpdateState.availableUpdate.value &&
-		appUpdateState.updatesEnabled.value,
-)
-const prideFundraiserEnabled = computed(
-	() => appSettings.getFeatureFlag('pride_fundraiser') && Date.now() < PRIDE_FUNDRAISER_END_DATE,
-)
-const hostingIntercomIdentityKey = computed(() => {
-	const rawServerId = route.params.id
-	const serverId = Array.isArray(rawServerId) ? rawServerId[0] : rawServerId
-	const userId = credentials.value?.user_id ?? credentials.value?.user?.id ?? 'anonymous'
-	return `${userId}:${serverId ?? 'hosting'}`
-})
-const hostingIntercom = useHostingIntercom({
-	enabled: computed(
-		() => hostingRouteActive.value && !hostingUpdateRequired.value && !!credentials.value?.session,
-	),
-	appId: 'ykeritl9',
-	fetchToken: fetchIntercomToken,
-	identityKey: hostingIntercomIdentityKey,
-	horizontalPadding: computed(() =>
-		sidebarVisible.value
-			? APP_SIDEBAR_WIDTH + INTERCOM_BUBBLE_DEFAULT_PADDING
-			: INTERCOM_BUBBLE_DEFAULT_PADDING,
-	),
-})
-
 const notificationManager = new AppNotificationManager()
 provideNotificationManager(notificationManager)
 const { handleError, addNotification } = notificationManager
@@ -314,8 +273,6 @@ useAppEvent(
 const popupNotificationManager = new AppPopupNotificationManager()
 providePopupNotificationManager(popupNotificationManager)
 const { addPopupNotification } = popupNotificationManager
-let adsConsentPopupId = null
-useAppEvent('ads_consent_required', handleAdsConsentRequired, appEvents)
 
 const appVersion = getVersion()
 const tauriApiClient = new TauriModrinthClient({
@@ -362,10 +319,8 @@ const hasPlus = computed(
 		(hasMidasBadge(credentials.value.user) ||
 			hasActivePride26Midas(authenticatedModrinthUser.value?.campaigns?.pride_26)),
 )
-const showAd = computed(
-	() => sidebarVisible.value && !hasPlus.value && credentials.value !== undefined,
-)
-const adConsentAvailable = computed(() => credentials.value !== undefined && !hasPlus.value)
+const showAd = ref(false)
+const adConsentAvailable = ref(false)
 providePageContext({
 	hierarchicalSidebarAvailable: ref(true),
 	showAds: showAd,
@@ -374,7 +329,7 @@ providePageContext({
 		left: ref(APP_LEFT_NAV_WIDTH),
 		right: computed(() => (sidebarVisible.value ? `${APP_SIDEBAR_WIDTH}px` : '0px')),
 	},
-	intercomBubble: hostingIntercom.intercomBubble,
+	intercomBubble: undefined,
 	featureFlags: {
 		serverRamAsBytesAlwaysOn: computed(() =>
 			appSettings.getFeatureFlag('server_ram_as_bytes_always_on'),
@@ -542,11 +497,6 @@ onMounted(async () => {
 	}
 
 	await useCheckDisableMouseover()
-	try {
-		handleAdsConsentRequired(await should_show_ads_consent_popup())
-	} catch (error) {
-		handleError(error)
-	}
 
 	document.querySelector('body').addEventListener('click', handleClick)
 	document.querySelector('body').addEventListener('auxclick', handleAuxClick)
@@ -600,27 +550,6 @@ const messages = defineMessages({
 		defaultMessage:
 			'Minecraft authentication servers may be down right now. Check your internet connection and try again later.',
 	},
-	adsConsentTitle: {
-		id: 'app.ads-consent.title',
-		defaultMessage: 'Your privacy and how ads support Modrinth',
-	},
-	adsConsentBody: {
-		id: 'app.ads-consent.body',
-		defaultMessage:
-			'Ads make Modrinth possible and fund creator payouts. Our partners may store or access cookies in the app to personalize ads and measure performance.',
-	},
-	adsConsentManage: {
-		id: 'app.ads-consent.manage',
-		defaultMessage: 'Manage preferences',
-	},
-	adsConsentReject: {
-		id: 'app.ads-consent.reject',
-		defaultMessage: 'Reject all',
-	},
-	adsConsentAccept: {
-		id: 'app.ads-consent.accept',
-		defaultMessage: 'Accept all',
-	},
 	home: {
 		id: 'app.nav.home',
 		defaultMessage: 'Home',
@@ -673,10 +602,6 @@ const messages = defineMessages({
 		id: 'app.restarting',
 		defaultMessage: 'Restarting...',
 	},
-	upgradeToModrinthPlus: {
-		id: 'app.nav.upgrade-to-modrinth-plus',
-		defaultMessage: 'Upgrade to Modrinth+',
-	},
 	news: {
 		id: 'app.news.title',
 		defaultMessage: 'News',
@@ -690,55 +615,6 @@ const messages = defineMessages({
 		defaultMessage: 'Playing as',
 	},
 })
-
-function handleAdsConsentRequired(required) {
-	if (!required) {
-		if (adsConsentPopupId !== null) {
-			popupNotificationManager.removeNotification(adsConsentPopupId)
-			adsConsentPopupId = null
-		}
-		return
-	}
-
-	if (
-		adsConsentPopupId !== null &&
-		popupNotificationManager.getNotifications().some((item) => item.id === adsConsentPopupId)
-	) {
-		return
-	}
-
-	const notification = addPopupNotification({
-		contentType: 'standard',
-		title: formatMessage(messages.adsConsentTitle),
-		text: formatMessage(messages.adsConsentBody),
-		type: 'info',
-		hideIcon: true,
-		autoCloseMs: null,
-		dismissible: false,
-		buttons: [
-			{
-				label: formatMessage(messages.adsConsentManage),
-				action: () => perform_ads_consent_action('manage').catch(handleError),
-				color: 'standard',
-				keepOpen: true,
-			},
-			{
-				label: formatMessage(messages.adsConsentReject),
-				action: () => perform_ads_consent_action('reject').catch(handleError),
-				color: 'brand',
-				keepOpen: true,
-			},
-			{
-				label: formatMessage(messages.adsConsentAccept),
-				action: () => perform_ads_consent_action('accept').catch(handleError),
-				color: 'brand',
-				keepOpen: true,
-			},
-		],
-	})
-
-	adsConsentPopupId = notification.id
-}
 
 async function setupApp() {
 	tags.initialize()
@@ -1469,16 +1345,6 @@ const modrinthAccountMenuOptions = computed(() => [
 		action: () => router.push(`/user/${encodeURIComponent(credentials.value.user.username)}`),
 	},
 	{
-		id: 'plus',
-		label: formatMessage(messages.upgradeToModrinthPlus),
-		icon: ArrowBigUpDashIcon,
-		type: 'link',
-		href: 'https://modrinth.plus?app',
-		target: '_blank',
-		tone: 'purple',
-		shown: !hasPlus.value,
-	},
-	{
 		id: 'add-friend',
 		label: formatMessage(messages.addFriend),
 		icon: UserPlusIcon,
@@ -1509,32 +1375,6 @@ const modrinthAccountMenuOptions = computed(() => [
 		action: () => logOut(),
 	},
 ])
-
-async function fetchIntercomToken() {
-	const creds = await getCreds()
-	if (!creds?.session) {
-		throw new Error('Not authenticated')
-	}
-
-	const params = new URLSearchParams()
-	const rawServerId = route.params.id
-	const serverId = Array.isArray(rawServerId) ? rawServerId[0] : rawServerId
-	if (route.path.startsWith('/hosting/manage/') && typeof serverId === 'string') {
-		params.set('server_id', serverId)
-	}
-	const query = params.size > 0 ? `?${params.toString()}` : ''
-
-	const response = await tauriFetch(`${config.siteUrl}/api/intercom/messenger-jwt${query}`, {
-		method: 'GET',
-		headers: {
-			Authorization: `Bearer ${creds.session}`,
-		},
-	})
-	if (!response.ok) {
-		throw new Error(`Failed to fetch Intercom token: ${response.status}`)
-	}
-	return await response.json()
-}
 
 watch(
 	[stateInitialized, showAd, adConsentAvailable],
@@ -2216,18 +2056,6 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 			>
 				<ImageIcon />
 			</NavButton>
-			<NavButton
-				v-tooltip.right="formatMessage(messages.modrinthHosting)"
-				to="/hosting/manage"
-				:is-primary="(r) => r.path === '/hosting/manage' || r.path === '/hosting/manage/'"
-				:is-subpage="
-					(r) =>
-						(r.path.startsWith('/hosting/manage/') && r.path !== '/hosting/manage/') ||
-						((r.path.startsWith('/browse') || r.path.startsWith('/project')) && r.query.sid)
-				"
-			>
-				<ServerStackIcon />
-			</NavButton>
 			<suspense>
 				<QuickInstanceSwitcher>
 					<NavButton
@@ -2370,7 +2198,6 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 		}"
 	>
 		<div class="app-viewport flex-grow router-view">
-			<SurveyPopup />
 			<div
 				class="loading-indicator-container h-8 fixed z-50 pointer-events-none"
 				:style="{
@@ -2413,8 +2240,7 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 			>
 				{{ formatMessage(messages.authUnreachableBody) }}
 			</Admonition>
-			<HostingUpdateRequired v-if="hostingUpdateRequired" />
-			<RouterView v-else v-slot="{ Component }">
+			<RouterView v-slot="{ Component }">
 				<template v-if="Component">
 					<Suspense @pending="onSuspensePending" @resolve="onSuspenseResolve">
 						<component :is="Component"></component>
@@ -2429,7 +2255,6 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 			<div
 				v-overlay-scrollbars="sidebarOverlayScrollbarsOptions"
 				class="app-sidebar-scrollable flex-grow shrink relative"
-				:class="{ 'pb-12': !hasPlus }"
 				data-overlayscrollbars-initialize
 			>
 				<OnboardingChecklist
@@ -2462,10 +2287,6 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 							/>
 						</suspense>
 					</div>
-					<PrideFundraiserBanner
-						v-if="prideFundraiserEnabled"
-						class="p-4 border-0 border-b-[1px] border-[--brand-gradient-border] border-solid"
-					/>
 					<div v-if="news && news.length > 0" class="p-4 flex flex-col items-center">
 						<h3 class="text-base mb-4 text-primary font-medium m-0 text-left w-full">
 							{{ formatMessage(messages.news) }}
@@ -2491,17 +2312,6 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 					</div>
 				</div>
 			</div>
-			<template v-if="showAd">
-				<a
-					href="https://modrinth.plus?app"
-					class="absolute bottom-[250px] w-full flex justify-center items-center gap-1 px-4 py-3 text-purple font-medium hover:underline z-10"
-					target="_blank"
-				>
-					<ArrowBigUpDashIcon class="text-2xl" />
-					{{ formatMessage(messages.upgradeToModrinthPlus) }}
-				</a>
-				<PromotionWrapper />
-			</template>
 		</div>
 	</div>
 	<I18nDebugPanel />

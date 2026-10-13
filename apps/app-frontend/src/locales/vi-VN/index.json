@@ -131,21 +131,6 @@
   "app.action-bar.view-logs": {
     "message": "Xem nhật ký"
   },
-  "app.ads-consent.accept": {
-    "message": "Chấp nhận tất cả"
-  },
-  "app.ads-consent.body": {
-    "message": "Quảng cáo giúp Modrinth duy trì hoạt động và chi trả cho nhà sáng tạo. Các đối tác của chúng tôi có thể lưu trữ hoặc truy cập cookie trong ứng dụng để cá nhân hóa quảng cáo và đo lường hiệu quả."
-  },
-  "app.ads-consent.manage": {
-    "message": "Quản lý tùy chọn"
-  },
-  "app.ads-consent.reject": {
-    "message": "Từ chối tất cả"
-  },
-  "app.ads-consent.title": {
-    "message": "Quyền riêng tư của bạn và cách quảng cáo hỗ trợ Modrinth"
-  },
   "app.appearance-settings.compact-mode.description": {
     "message": "Hiển thị các bản cài đặt trong thư viện theo bố cục hàng thu gọn."
   },
@@ -1378,9 +1363,6 @@
   },
   "app.nav.switch-account": {
     "message": "Chuyển tài khoản"
-  },
-  "app.nav.upgrade-to-modrinth-plus": {
-    "message": "Nâng cấp lên Modrinth+"
   },
   "app.nav.view-profile": {
     "message": "Xem hồ sơ"
@@ -2735,20 +2717,11 @@
   "app.settings.operating-system.macos": {
     "message": "macOS"
   },
-  "app.settings.privacy.ads-consent.intro": {
-    "message": "Quảng cáo giúp Modrinth duy trì hoạt động và chi trả cho nhà sáng tạo. Các đối tác của chúng tôi có thể lưu trữ hoặc truy cập cookie trong ứng dụng để cá nhân hóa quảng cáo và đo lường hiệu quả. Bạn có thể từ chối hoặc quản lý tùy chọn bên dưới."
-  },
   "app.settings.privacy.discord-rich-presence.description": {
     "message": "Hiển thị Ứng dụng Modrinth là hoạt động hiện tại của bạn trên Discord. Tùy chọn này không ảnh hưởng đến Rich Presence do mod thêm vào bản cài đặt. Cần khởi động lại ứng dụng."
   },
   "app.settings.privacy.discord-rich-presence.title": {
     "message": "Discord Rich Presence"
-  },
-  "app.settings.privacy.telemetry.description": {
-    "message": "Modrinth thu thập dữ liệu phân tích và sử dụng đã được ẩn danh để cải thiện và cá nhân hóa trải nghiệm người dùng. Khi tắt tùy chọn này, bạn sẽ từ chối tham gia và dữ liệu của bạn sẽ không còn được thu thập."
-  },
-  "app.settings.privacy.telemetry.title": {
-    "message": "Dữ liệu đo từ xa"
   },
   "app.settings.resource-management.always-show-copy-details.description": {
     "message": "Hiển thị thao tác Sao chép chi tiết khi một lượt cài đặt đang chờ hoặc đang chạy. Thao tác này luôn có sẵn với các lượt cài đặt thất bại hoặc bị gián đoạn."

@@ -131,21 +131,6 @@
   "app.action-bar.view-logs": {
     "message": "Naplók megtekintése"
   },
-  "app.ads-consent.accept": {
-    "message": "Összes elfogadása"
-  },
-  "app.ads-consent.body": {
-    "message": "A hirdetések teszik lehetővé a Modrinth működését, és biztosítják a tartalomkészítők juttatásait. Partnereink sütiket tárolhatnak vagy érhetnek el az alkalmazásban a hirdetések személyre szabása és a teljesítmény mérése céljából."
-  },
-  "app.ads-consent.manage": {
-    "message": "Beállítások kezelése"
-  },
-  "app.ads-consent.reject": {
-    "message": "Összes elutasítása"
-  },
-  "app.ads-consent.title": {
-    "message": "Adataid védelme és a hirdetések szerepe a Modrinth működésében"
-  },
   "app.appearance-settings.compact-mode.description": {
     "message": "A könyvtári példányok megjelenítése egy összetett, soros elrendezésben."
   },
@@ -1378,9 +1363,6 @@
   },
   "app.nav.switch-account": {
     "message": "Fiókváltás"
-  },
-  "app.nav.upgrade-to-modrinth-plus": {
-    "message": "Frissíts a Modrinth+-ra"
   },
   "app.nav.view-profile": {
     "message": "Profil megtekintése"
@@ -2735,20 +2717,11 @@
   "app.settings.operating-system.macos": {
     "message": "macOS"
   },
-  "app.settings.privacy.ads-consent.intro": {
-    "message": "A hirdetések teszik lehetővé a Modrinth működését, és biztosítják a tartalomkészítők juttatásait. Partnereink sütiket tárolhatnak vagy érhetnek el az alkalmazásban a hirdetések személyre szabása és a teljesítmény mérése céljából. Alább leiratkozhatsz erről, illetve beállíthatod a preferenciáidat."
-  },
   "app.settings.privacy.discord-rich-presence.description": {
     "message": "A Icarus megjelenítése aktuális tevékenységként a Discordon. Ez nem érinti a modok által a példányokhoz hozzáadott Rich Presence-t. Az alkalmazás újraindítását igényli."
   },
   "app.settings.privacy.discord-rich-presence.title": {
     "message": "Discord Rich Presence"
-  },
-  "app.settings.privacy.telemetry.description": {
-    "message": "A Modrinth névtelen használati és telemetriai adatokat gyűjt a felhasználói élmény javítása és személyre szabása érdekében. Ha kikapcsolod ezt a beállítást, leiratkozol erről, és a rendszer többé nem gyűjti az adataidat."
-  },
-  "app.settings.privacy.telemetry.title": {
-    "message": "Telemetria"
   },
   "app.settings.resource-management.always-show-copy-details.description": {
     "message": "A „Részletek másolása” művelet megjelenítése, amíg a telepítés várólistán van vagy fut. A művelet mindig elérhető a sikertelen vagy megszakított telepítések esetén."

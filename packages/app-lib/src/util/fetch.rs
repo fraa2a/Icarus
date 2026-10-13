@@ -976,8 +976,7 @@ async fn fetch_advanced_with_target(
         None
     };
 
-    let download_meta_header = download_meta
-        .map(|m| (DOWNLOAD_META_HEADER.to_string(), m.to_header_value()));
+    let _ = download_meta;
 
     for attempt in 1..=(FETCH_ATTEMPTS + 1) {
         if is_api_url {
@@ -1007,11 +1006,6 @@ async fn fetch_advanced_with_target(
 
         if let Some(ref creds) = creds {
             req = req.header("Authorization", &creds.session);
-        }
-
-        if let Some((name, value)) = &download_meta_header {
-            tracing::debug!("Sending download analytics: {value}");
-            req = req.header(name.as_str(), value.as_str());
         }
 
         let result = crate::install::control::download_step(req.send()).await?;
