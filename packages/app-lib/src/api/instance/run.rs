@@ -237,7 +237,29 @@ async fn run_credentials(
     }
 
     crate::minecraft_skins::flush_pending_skin_change().await?;
-    crate::launcher::launch_minecraft(
+    let mut java_args = java_args;
+    let cape_session = if credentials.is_offline() {
+        let cache_dir = state.directories.caches_dir().join("offline-capes");
+        match crate::offline_capes::prepare(
+            &credentials.offline_profile.name,
+            credentials.offline_profile.id,
+            &cache_dir,
+        )
+        .await
+        {
+            Ok(session) => session,
+            Err(error) => {
+                tracing::warn!("Could not prepare offline cape: {error}");
+                None
+            }
+        }
+    } else {
+        None
+    };
+    if let Some(session) = &cape_session {
+        java_args.extend(session.jvm_args().iter().cloned());
+    }
+    let process = crate::launcher::launch_minecraft(
         &java_args,
         &launch_env_args,
         &mc_set_options,
@@ -249,7 +271,15 @@ async fn run_credentials(
         &context,
         quick_play_type,
     )
-    .await
+    .await?;
+    if let Some(session) = cape_session {
+        let process_id = process.uuid;
+        tokio::spawn(async move {
+            let _ = crate::api::process::wait_for(process_id).await;
+            drop(session);
+        });
+    }
+    Ok(process)
 }
 
 pub async fn kill(instance_id: &str) -> crate::Result<()> {
