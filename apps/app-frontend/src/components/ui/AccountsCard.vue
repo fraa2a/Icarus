@@ -9,6 +9,7 @@
 			<SpinnerIcon v-else class="animate-spin" />
 			{{ formatMessage(messages.signInToMinecraft) }}
 		</Button>
+		<Button @click="offlineModal?.show()"> <PlusIcon /> Add offline account </Button>
 	</div>
 	<Accordion
 		v-else
@@ -30,7 +31,9 @@
 					<span class="truncate w-full text-left">{{
 						selectedAccount ? selectedAccount.profile.name : formatMessage(messages.selectAccount)
 					}}</span>
-					<span class="text-secondary text-xs">{{ formatMessage(messages.minecraftAccount) }}</span>
+					<span class="text-secondary text-xs">{{
+						selectedAccount?.offline ? 'Offline account' : formatMessage(messages.minecraftAccount)
+					}}</span>
 				</div>
 			</div>
 		</template>
@@ -56,6 +59,7 @@
 							"
 						>
 							{{ account.profile.name }}
+							<span v-if="account.offline" class="text-secondary text-xs">(Offline)</span>
 						</p>
 					</button>
 					<IconButton
@@ -78,11 +82,15 @@
 					@click="login()"
 				>
 					<PlusIcon />
-					{{ formatMessage(messages.addAccount) }}
+					Add Microsoft account
+				</Button>
+				<Button class="w-full" @click="offlineModal?.show()">
+					<PlusIcon /> Add offline account
 				</Button>
 			</div>
 		</div>
 	</Accordion>
+	<OfflineAccountModal ref="offlineModal" @created="setAccount" />
 </template>
 
 <script setup lang="ts">
@@ -106,6 +114,8 @@ import {
 import type { Ref } from 'vue'
 import { computed, onUnmounted, ref } from 'vue'
 
+import OfflineAccountModal from '@/components/ui/OfflineAccountModal.vue'
+
 import { useAppEvent } from '@/composables/use-app-event'
 import { handleSevereError } from '@/composables/use-error.js'
 import { trackEvent } from '@/helpers/analytics'
@@ -128,6 +138,7 @@ const emit = defineEmits<{
 }>()
 
 type MinecraftCredential = {
+	offline?: boolean
 	profile: {
 		id: string
 		name: string
@@ -136,6 +147,7 @@ type MinecraftCredential = {
 
 const accounts: Ref<MinecraftCredential[]> = ref([])
 const loginDisabled = ref(false)
+const offlineModal = ref<InstanceType<typeof OfflineAccountModal>>()
 const defaultUser = ref<string | undefined>()
 const equippedSkin = ref<Skin | null>(null)
 const equippedHeadUrl = ref<string>()
@@ -161,6 +173,12 @@ async function refreshValues() {
 	const userList = await users().catch(handleError)
 	accounts.value = Array.isArray(userList) ? [...userList] : []
 	accounts.value.sort((a, b) => (a.profile?.name ?? '').localeCompare(b.profile?.name ?? ''))
+
+	if (accounts.value.find((account) => account.profile.id === defaultUser.value)?.offline) {
+		equippedSkin.value = null
+		await updateHeadUrl(null)
+		return
+	}
 
 	try {
 		const skins = await get_available_skins()
@@ -202,6 +220,9 @@ const selectedAccount = computed(() =>
 )
 
 const avatarUrl = computed(() => {
+	if (selectedAccount.value?.offline) {
+		return getAccountAvatarUrl(selectedAccount.value)
+	}
 	if (equippedSkin.value?.texture_key) {
 		const cachedUrl = equippedHeadUrl.value
 		if (cachedUrl) {
@@ -216,6 +237,9 @@ const avatarUrl = computed(() => {
 })
 
 function getAccountAvatarUrl(account: MinecraftCredential) {
+	if (account.offline) {
+		return `https://mc-heads.net/avatar/${encodeURIComponent(account.profile.name)}/128`
+	}
 	if (
 		account.profile.id === selectedAccount.value?.profile?.id &&
 		equippedSkin.value?.texture_key

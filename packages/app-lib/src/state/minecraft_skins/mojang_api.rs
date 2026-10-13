@@ -25,6 +25,7 @@ impl MinecraftCapeOperation {
         credentials: &Credentials,
         cape_id: Uuid,
     ) -> crate::Result<()> {
+        credentials.require_online()?;
         update_profile_cache_from_response(
             INSECURE_REQWEST_CLIENT
 				.put("https://api.minecraftservices.com/minecraft/profile/capes/active")
@@ -45,6 +46,7 @@ impl MinecraftCapeOperation {
     }
 
     pub async fn unequip_any(credentials: &Credentials) -> crate::Result<()> {
+        credentials.require_online()?;
         update_profile_cache_from_response(
 			INSECURE_REQWEST_CLIENT
 				.delete("https://api.minecraftservices.com/minecraft/profile/capes/active")
@@ -75,6 +77,7 @@ impl MinecraftSkinOperation {
         TextureStream::Error: Into<Box<dyn Error + Send + Sync>>,
         Bytes: From<TextureStream::Ok>,
     {
+        credentials.require_online()?;
         let form = reqwest::multipart::Form::new()
             .text(
                 "variant",
@@ -115,6 +118,7 @@ impl MinecraftSkinOperation {
     }
 
     pub async fn unequip_any(credentials: &Credentials) -> crate::Result<()> {
+        credentials.require_online()?;
         update_profile_cache_from_response(
 			INSECURE_REQWEST_CLIENT
 				.delete("https://api.minecraftservices.com/minecraft/profile/skins/active")
