@@ -12517,8 +12517,8 @@ dependencies = [
  "windows-core 0.61.2",
  "winreg 0.55.0",
  "zbus",
- "zip 6.0.0",,
- "rsa"
+ "rsa",
+ "zip 6.0.0"
 ]
 
 [[package]]
