@@ -1226,7 +1226,7 @@ async function logOut() {
 async function fetchStoredModrinthAccounts() {
 	const all = (await getAllCreds().catch(handleError)) ?? []
 	const ids = all.map((account) => account.user_id)
-	const users = ids.length ? (await get_user_many(ids).catch(handleError)) ?? [] : []
+	const users = ids.length ? ((await get_user_many(ids).catch(handleError)) ?? []) : []
 	const usersById = new Map(users.map((user) => [user.id, user]))
 
 	storedModrinthAccounts.value = all.map((account) => ({

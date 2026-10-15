@@ -2,7 +2,11 @@ name: Icarus release
 
 on:
   push:
+    branches: [main]
     tags: ['v*']
+    paths:
+      - .github/workflows/icarus-release.yml
+      - apps/app/tauri-release.conf.json
   workflow_dispatch:
 
 permissions:

@@ -80,25 +80,3 @@ jobs:
           name: labrinth-docker-context
           retention-days: 1
           path: apps/labrinth/docker-stage
-
-  docker-build:
-    needs: [build]
-    if: ${{ github.repository == 'modrinth/code' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
-
-    uses: SparkUniverse/workflows/.github/workflows/docker-build.yaml@main
-    with:
-      image-name: labrinth
-      dockerfile-path: apps/labrinth/Dockerfile
-      artifacts-name: labrinth-docker-context
-
-  deploy:
-    needs: [docker-build]
-    if: ${{ github.repository == 'modrinth/code' && (github.ref == 'refs/heads/prod') }}
-
-    uses: SparkUniverse/workflows/.github/workflows/argo-update.yaml@main
-    secrets:
-      ARGOCD_DEPLOY_KEY: ${{ secrets.ARGOCD_DEPLOY_KEY }}
-    with:
-      application-set: labrinth
-      branch: ${{ github.ref == 'refs/heads/prod' && 'main' || 'develop' }}
-      environment-name: ${{ github.ref == 'refs/heads/prod' && 'production' || 'staging' }}

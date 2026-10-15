@@ -24,8 +24,8 @@ import { onMounted, ref, watch } from 'vue'
 
 import IcarusLogo from '@/components/ui/IcarusLogo.vue'
 import ProgressBar from '@/components/ui/ProgressBar.vue'
-import { useAppEvent } from '@/composables/use-app-event'
 import { accentStyle, useAccent } from '@/composables/use-accent.ts'
+import { useAppEvent } from '@/composables/use-app-event'
 import { useTheme } from '@/composables/use-theme.ts'
 import { debugStartup } from '@/helpers/startup-debug'
 

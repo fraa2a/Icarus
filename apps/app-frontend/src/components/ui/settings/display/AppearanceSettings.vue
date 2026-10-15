@@ -2,22 +2,22 @@
 import {
 	AppearanceSettingsLayout,
 	defineMessages,
-	Toggle,
-	useVIntl,
 	injectAuth,
 	injectUserPreferences,
 	provideAppearanceSettings,
+	Toggle,
 	useSavable,
+	useVIntl,
 } from '@modrinth/ui'
 import { platform } from '@tauri-apps/plugin-os'
 import { computed, inject, onBeforeUnmount, onMounted, watch } from 'vue'
 
 import { type AccentPreset, useAccent } from '@/composables/use-accent.ts'
-import { ACCENT_COLORS } from '@/utils/accent-colors.mjs'
 import { useAppSettings } from '@/composables/use-app-settings.ts'
 import { type ColorTheme, isDarkTheme, useTheme } from '@/composables/use-theme.ts'
 import { type AppSettings, get, set } from '@/helpers/settings.ts'
 import { appSettingsModalContextKey } from '@/providers/app-settings-modal'
+import { ACCENT_COLORS } from '@/utils/accent-colors.mjs'
 
 const theme = useTheme()
 const accent = useAccent()

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 
+import icarusLogo from '@/assets/icarus-logo.png'
 import { useAccent } from '@/composables/use-accent.ts'
 import { ACCENT_COLORS, recolorPixels } from '@/utils/accent-colors.mjs'
-import icarusLogo from '@/assets/icarus-logo.png'
 const accent = useAccent()
 const recolored = ref(icarusLogo)
 const image = new Image()

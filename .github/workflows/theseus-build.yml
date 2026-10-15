@@ -259,6 +259,12 @@ jobs:
         with:
           rustflags: ''
 
+      - name: Setup Java
+        uses: actions/setup-java@03ad4de0992f5dab5e18fcb136590ce7c4a0ac95 # v5.6.0
+        with:
+          distribution: temurin
+          java-version: 17
+
       - name: Setup sccache
         uses: mozilla-actions/sccache-action@9e7fa8a12102821edf02ca5dbea1acd0f89a2696 # v0.0.10
 
@@ -273,7 +279,7 @@ jobs:
         run: sudo rm -rf /usr/local/lib/android /usr/local/.ghcup /opt/hostedtoolcache/CodeQL /usr/share/swift
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: pnpm --filter @modrinth/monorepo --filter @modrinth/app... install --frozen-lockfile
 
       - name: Set app environment
         shell: bash

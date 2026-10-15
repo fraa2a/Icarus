@@ -61,25 +61,3 @@ jobs:
           name: daedalus-docker-context
           retention-days: 1
           path: apps/daedalus_client/docker-stage
-
-  docker-build:
-    needs: [build]
-    if: ${{ github.repository == 'modrinth/code' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository) }}
-
-    uses: SparkUniverse/workflows/.github/workflows/docker-build.yaml@main
-    with:
-      image-name: daedalus
-      dockerfile-path: apps/daedalus_client/Dockerfile
-      artifacts-name: daedalus-docker-context
-
-  deploy:
-    needs: [docker-build]
-    if: ${{ github.repository == 'modrinth/code' && (github.ref == 'refs/heads/prod' && github.event_name == 'push') }}
-
-    uses: SparkUniverse/workflows/.github/workflows/argo-update.yaml@main
-    secrets:
-      ARGOCD_DEPLOY_KEY: ${{ secrets.ARGOCD_DEPLOY_KEY }}
-    with:
-      application-set: launcher-meta
-      branch: main
-      environment-name: production

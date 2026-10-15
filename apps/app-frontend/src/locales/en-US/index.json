@@ -3632,6 +3632,63 @@
   "friends.sign-in-to-add-friends": {
     "message": "<link>Sign in to a Modrinth account</link> to add friends and see what they're playing!"
   },
+  "icarus.migration.all": {
+    "message": "Select all"
+  },
+  "icarus.migration.body": {
+    "message": "Your instances are ready to import. Choose all of them or just your favorites."
+  },
+  "icarus.migration.busy": {
+    "message": "Importing instances…"
+  },
+  "icarus.migration.choose": {
+    "message": "Choose instances"
+  },
+  "icarus.migration.empty": {
+    "message": "All available instances have been imported."
+  },
+  "icarus.migration.failed": {
+    "message": "Could not check for Modrinth App instances."
+  },
+  "icarus.migration.import": {
+    "message": "Import {count, plural, one {# instance} other {# instances}}"
+  },
+  "icarus.migration.remove": {
+    "message": "Remove originals from the Modrinth App after importing"
+  },
+  "icarus.migration.remove-hint": {
+    "message": "Original instance files will be deleted only after their import succeeds. This cannot be undone."
+  },
+  "icarus.migration.retry": {
+    "message": "Check again"
+  },
+  "icarus.migration.title": {
+    "message": "Bring your Modrinth App instances to Icarus"
+  },
+  "icarus.run-copy.account": {
+    "message": "Minecraft account"
+  },
+  "icarus.run-copy.action": {
+    "message": "Launch copy with another account"
+  },
+  "icarus.run-copy.body": {
+    "message": "Create an independent copy of this instance and launch it with the selected Minecraft account. Each copy has its own console."
+  },
+  "icarus.run-copy.busy": {
+    "message": "Creating and launching…"
+  },
+  "icarus.run-copy.empty": {
+    "message": "Sign in to a Minecraft account in Settings, then try again."
+  },
+  "icarus.run-copy.launch": {
+    "message": "Create and launch copy"
+  },
+  "icarus.run-copy.saves": {
+    "message": "While the original instance is running, its saves are excluded from the copy to protect your worlds."
+  },
+  "icarus.run-copy.title": {
+    "message": "Launch a copy with another account"
+  },
   "installation-settings.shared-instance.linked-title": {
     "message": "Linked shared instance"
   },

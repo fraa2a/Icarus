@@ -115,7 +115,6 @@ import type { Ref } from 'vue'
 import { computed, onUnmounted, ref } from 'vue'
 
 import OfflineAccountModal from '@/components/ui/OfflineAccountModal.vue'
-
 import { useAppEvent } from '@/composables/use-app-event'
 import { handleSevereError } from '@/composables/use-error.js'
 import { trackEvent } from '@/helpers/analytics'
