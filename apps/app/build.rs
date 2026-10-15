@@ -12,7 +12,9 @@ fn main() {
                 "accent",
                 InlinedPlugin::new()
                     .commands(&["set_accent_icon"])
-                    .default_permission(DefaultPermissionRule::AllowAllCommands),
+                    .default_permission(
+                        DefaultPermissionRule::AllowAllCommands,
+                    ),
             )
             .plugin(
                 "auth",
@@ -431,8 +433,14 @@ fn main() {
             .plugin(
                 "icarus",
                 InlinedPlugin::new()
-                    .commands(&["migration_instances", "import_modrinth", "run_copy"])
-                    .default_permission(DefaultPermissionRule::AllowAllCommands),
+                    .commands(&[
+                        "migration_instances",
+                        "import_modrinth",
+                        "run_copy",
+                    ])
+                    .default_permission(
+                        DefaultPermissionRule::AllowAllCommands,
+                    ),
             )
             .plugin(
                 "worlds",
