@@ -5,7 +5,6 @@ import {
 } from '@modrinth/ui'
 import { readFile } from '@tauri-apps/plugin-fs'
 
-
 export function setupImageViewerEditorProvider() {
 	provideImageViewerEditor({
 		async loadEditorData(source: ImageViewerEditorSource): Promise<ImageViewerEditorData> {

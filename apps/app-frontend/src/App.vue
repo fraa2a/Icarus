@@ -63,7 +63,6 @@ import { useRouteLoading } from '@/app/runtime/use-route-loading'
 import AppSidebar from '@/app/shell/sidebar/index.vue'
 import AppTitleBar from '@/app/shell/title-bar/index.vue'
 import ErrorModal from '@/components/ui/ErrorModal.vue'
-import HostingUpdateRequired from '@/components/ui/HostingUpdateRequired.vue'
 import AddServerToInstanceModal from '@/components/ui/install_flow/AddServerToInstanceModal.vue'
 import UnknownPackWarningModal from '@/components/ui/install_flow/UnknownPackWarningModal.vue'
 import IconEditorModal from '@/components/ui/instance_settings/icon-editor-modal/index.vue'
@@ -178,6 +177,22 @@ const appTheme = useTheme()
 const quickInstances = useQuickInstanceLimit()
 const router = useRouter()
 const route = useRoute()
+const credentials = ref()
+let credentialsRefreshId = 0
+const sidebarToggled = ref(!appSettings.toggleSidebar)
+watch(
+	() => appSettings.toggleSidebar,
+	(toggleSidebar) => {
+		sidebarToggled.value = !toggleSidebar
+	},
+)
+const forceSidebar = computed(
+	() =>
+		route.path.startsWith('/browse') ||
+		route.path.startsWith('/project') ||
+		route.path.startsWith('/user'),
+)
+const sidebarVisible = computed(() => sidebarToggled.value || forceSidebar.value)
 const { channel: appEventChannel, events: appEvents } = setupAppEventsProvider()
 useInstanceMetadataRefresh(appEvents)
 const breadcrumbManager = createBreadcrumbManager()
@@ -583,7 +598,6 @@ async function setupApp() {
 			isFullscreen.value = await getCurrentWindow().isFullscreen()
 		}),
 	)
-
 
 	const osType = await traceStartupStep('Read operating system type', async () => type())
 	if (osType === 'macos') {
@@ -1148,7 +1162,6 @@ const modrinthAccountMenuOptions = computed(() => [
 		action: () => logOut(),
 	},
 ])
-
 
 onMounted(() => {
 	invoke('show_window')
@@ -1964,8 +1977,7 @@ provideAppUpdateDownloadProgress(appUpdateDownload)
 			>
 				{{ formatMessage(messages.authUnreachableBody) }}
 			</Admonition>
-			<HostingUpdateRequired v-if="hostingUpdateRequired" />
-			<RouterView v-else v-slot="{ Component }">
+			<RouterView v-slot="{ Component }">
 				<template v-if="Component">
 					<Suspense @pending="onSuspensePending" @resolve="onSuspenseResolve">
 						<component :is="Component"></component>

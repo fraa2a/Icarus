@@ -12,7 +12,6 @@ import OnboardingChecklist from '@/features/onboarding/checklist.vue'
 import type { ModrinthCredentials } from '@/helpers/mr_auth'
 import { injectOnboardingChecklist } from '@/providers/onboarding-checklist'
 
-
 defineProps<{
 	credentials: ModrinthCredentials | null | undefined
 	visible: boolean
@@ -123,8 +122,7 @@ const messages = defineMessages({
 							/>
 						</Suspense>
 					</div>
-					<NewsSidebar
-					/>
+					<NewsSidebar />
 				</div>
 			</div>
 			<div

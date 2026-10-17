@@ -1,12 +1,6 @@
 <script setup lang="ts">
 import { DownloadIcon, FolderOpenIcon, LoaderCircleIcon, TrashIcon } from '@modrinth/assets'
-import {
-	Button,
-	defineMessages,
-	injectNotificationManager,
-	Toggle,
-	useVIntl,
-} from '@modrinth/ui'
+import { Button, defineMessages, injectNotificationManager, Toggle, useVIntl } from '@modrinth/ui'
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import { ref } from 'vue'
 
@@ -142,7 +136,6 @@ async function openDbBackupsFolder() {
 async function handleExportDebugInfo() {
 	await exportDebugInfo(formatMessage(messages.exportDebugInfo)).catch(handleError)
 }
-
 </script>
 
 <template>
