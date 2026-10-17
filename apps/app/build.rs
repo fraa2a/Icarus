@@ -425,6 +425,14 @@ fn main() {
                     ),
             )
             .plugin(
+                "accent",
+                InlinedPlugin::new()
+                    .commands(&["set_accent_icon"])
+                    .default_permission(
+                        DefaultPermissionRule::AllowAllCommands,
+                    ),
+            )
+            .plugin(
                 "worlds",
                 InlinedPlugin::new()
                     .commands(&[
