@@ -35,6 +35,14 @@ You should now have a development build of the app running with hot-reloading en
 
 The `Icarus release` workflow builds signed bundles on GitHub-hosted Linux, Windows, and macOS runners. Set the repository secrets `TAURI_PRIVATE_KEY` and `TAURI_KEY_PASSWORD` to the private updater key and its passphrase. The matching public key is stored in `tauri-release.conf.json`.
 
+After a stable GitHub release is published, the workflow updates the existing
+`icarus-launcher-bin` AUR package from the release's verified `.deb` artifact.
+Set `AUR_SSH_PRIVATE_KEY` to a dedicated, unencrypted SSH private key whose
+public key is registered with the AUR account that maintains the package. Set
+`AUR_KNOWN_HOSTS` to the independently verified `aur.archlinux.org` SSH host
+key line in OpenSSH `known_hosts` format. Do not put either private key in the
+repository. Prereleases do not update AUR.
+
 Run the workflow manually to build and verify the bundles without publishing. Changes to the release workflow or updater configuration on `main` also trigger this verification. To publish, push a `vMAJOR.MINOR.PATCH` tag matching the upstream app version. The workflow sets the app's build version from that tag, verifies every update signature, and publishes the installers and `latest.json` together. Prerelease tags publish prereleases without changing the stable updater endpoint.
 
 Updates are served from [Icarus GitHub Releases](https://github.com/fraa2a/Icarus/releases). Windows bundles currently have an updater signature without an Authenticode certificate; macOS bundles are not notarized. A build containing the Icarus public key must be installed manually before it can accept Icarus updates.
