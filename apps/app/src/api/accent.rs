@@ -28,9 +28,8 @@ fn recolor_icon(image: &mut RgbaImage, color: [u8; 3]) {
             continue;
         }
         let shade = f32::from(r.max(g).max(b)) / 255.0;
-        for channel in 0..3 {
-            pixel.0[channel] =
-                (f32::from(color[channel]) * shade).round() as u8;
+        for (pixel_channel, color_channel) in pixel.0.iter_mut().take(3).zip(color) {
+            *pixel_channel = (f32::from(color_channel) * shade).round() as u8;
         }
     }
 }
