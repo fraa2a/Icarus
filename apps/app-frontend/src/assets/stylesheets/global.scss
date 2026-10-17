@@ -186,6 +186,21 @@ img {
 
 @import '@modrinth/assets/omorphia.scss';
 
+/* Icarus starts with its purple accent before Vue restores the saved preset. */
+html.dark-mode,
+html.oled-mode,
+html.retro-mode {
+	--color-brand: #c78aff;
+	--color-brand-highlight: rgba(199, 138, 255, 0.18);
+	--color-brand-shadow: rgba(199, 138, 255, 0.55);
+}
+
+html.light-mode {
+	--color-brand: #761ad6;
+	--color-brand-highlight: rgba(118, 26, 214, 0.18);
+	--color-brand-shadow: rgba(118, 26, 214, 0.55);
+}
+
 input {
 	border-radius: var(--size-rounded-sm);
 	box-sizing: border-box;
