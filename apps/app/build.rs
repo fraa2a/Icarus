@@ -9,20 +9,11 @@ fn main() {
         tauri_build::Attributes::new()
             .codegen(tauri_build::CodegenContext::new())
             .plugin(
-                "accent",
-                InlinedPlugin::new()
-                    .commands(&["set_accent_icon"])
-                    .default_permission(
-                        DefaultPermissionRule::AllowAllCommands,
-                    ),
-            )
-            .plugin(
                 "auth",
                 InlinedPlugin::new()
                     .commands(&[
                         "check_reachable",
                         "login",
-                        "create_offline_user",
                         "remove_user",
                         "get_default_user",
                         "set_default_user",
@@ -411,6 +402,9 @@ fn main() {
                         "file_rename",
                         "file_delete",
                         "file_save_as",
+                        "files_select_external",
+                        "files_save_external",
+                        "files_release_external",
                         "file_read_dragged_file",
                     ])
                     .default_permission(
@@ -425,18 +419,6 @@ fn main() {
                         "friend_statuses",
                         "add_friend",
                         "remove_friend",
-                    ])
-                    .default_permission(
-                        DefaultPermissionRule::AllowAllCommands,
-                    ),
-            )
-            .plugin(
-                "icarus",
-                InlinedPlugin::new()
-                    .commands(&[
-                        "migration_instances",
-                        "import_modrinth",
-                        "run_copy",
                     ])
                     .default_permission(
                         DefaultPermissionRule::AllowAllCommands,

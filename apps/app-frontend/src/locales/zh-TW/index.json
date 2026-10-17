@@ -287,6 +287,18 @@
   "app.content.sync-resource-packs-disabled": {
     "message": "請先在應用程式設定中啟用資源包同步。"
   },
+  "app.debug-export.canceling": {
+    "message": "正在取消匯出..."
+  },
+  "app.debug-export.exporting": {
+    "message": "正在匯出..."
+  },
+  "app.debug-export.finishing": {
+    "message": "即將完成..."
+  },
+  "app.debug-export.preparing": {
+    "message": "正在準備檔案..."
+  },
   "app.download-manager.active": {
     "message": "執行中"
   },
@@ -1363,6 +1375,9 @@
   },
   "app.nav.switch-account": {
     "message": "切換帳號"
+  },
+  "app.nav.upgrade-to-modrinth-plus": {
+    "message": "升級至 Modrinth+"
   },
   "app.nav.view-profile": {
     "message": "查看個人檔案"
@@ -2717,11 +2732,20 @@
   "app.settings.operating-system.macos": {
     "message": "macOS"
   },
+  "app.settings.privacy.ads-consent.intro": {
+    "message": "廣告使 Modrinth 得以營運，並為創作者提供收益。我們的合作夥伴可能會在應用程式中儲存或存取 Cookie，以實現個人化廣告並衡量廣告成效。你可以在下方選擇退出或管理偏好設定。"
+  },
   "app.settings.privacy.discord-rich-presence.description": {
     "message": "在 Discord 上將 Icarus 顯示為目前活動。這不會影響模組為實例新增的豐富狀態。需要重新啟動應用程式。"
   },
   "app.settings.privacy.discord-rich-presence.title": {
     "message": "Discord 豐富狀態"
+  },
+  "app.settings.privacy.telemetry.description": {
+    "message": "Modrinth 會收集匿名化的分析與使用資料，以提升使用者體驗並提供客製化服務。若停用此選項，即表示你選擇退出，你的資料將不再被收集。"
+  },
+  "app.settings.privacy.telemetry.title": {
+    "message": "遙測"
   },
   "app.settings.resource-management.always-show-copy-details.description": {
     "message": "當安裝已排入佇列或正在執行時，顯示「複製詳細資訊」按鈕。這項設定僅適用於前述安裝情形，安裝失敗或中斷時一律顯示該按鈕。"
@@ -2764,6 +2788,15 @@
   },
   "app.settings.resource-management.app-directory.title": {
     "message": "應用程式資料夾"
+  },
+  "app.settings.resource-management.debug-info.description": {
+    "message": "將應用程式紀錄與診斷資料匯出為 ZIP 檔案，以便與 Modrinth 客服團隊分享。"
+  },
+  "app.settings.resource-management.debug-info.export": {
+    "message": "匯出除錯資訊"
+  },
+  "app.settings.resource-management.debug-info.title": {
+    "message": "除錯資訊"
   },
   "app.settings.resource-management.maximum-concurrent-downloads.description": {
     "message": "應用程式一次可下載的檔案數量。若你的網路連線導致下載不穩定，請降低此數值。需要重新啟動應用程式。"
