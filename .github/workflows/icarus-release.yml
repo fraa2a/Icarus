@@ -268,3 +268,94 @@ jobs:
           else
             gh release edit "$RELEASE_TAG" --draft=false --prerelease=false --latest
           fi
+
+  publish-aur:
+    needs: publish
+    if: github.event_name == 'push' && github.ref_type == 'tag' && !contains(github.ref_name, '-')
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      RELEASE_TAG: ${{ github.ref_name }}
+      AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+      AUR_KNOWN_HOSTS: ${{ secrets.AUR_KNOWN_HOSTS }}
+    steps:
+      - name: Check AUR credentials
+        run: |
+          if [[ -z "$AUR_SSH_PRIVATE_KEY" || -z "$AUR_KNOWN_HOSTS" ]]; then
+            echo '::error::Set AUR_SSH_PRIVATE_KEY and AUR_KNOWN_HOSTS repository secrets'
+            exit 1
+          fi
+
+      - name: Download published Debian package
+        run: |
+          version="${RELEASE_TAG#v}"
+          gh release view "$RELEASE_TAG" --json isDraft,isPrerelease --jq 'select(.isDraft == false and .isPrerelease == false) | .isDraft' | grep -qx false
+          gh release download "$RELEASE_TAG" --pattern "Icarus_${version}_amd64.deb" --dir release-package
+          ar t "release-package/Icarus_${version}_amd64.deb" | grep -Eq '^data\.tar\.(gz|xz|zst)$'
+
+      - name: Clone existing AUR package
+        shell: bash
+        run: |
+          umask 077
+          printf '%s\n' "$AUR_SSH_PRIVATE_KEY" > "$RUNNER_TEMP/aur-key"
+          printf '%s\n' "$AUR_KNOWN_HOSTS" > "$RUNNER_TEMP/aur-known-hosts"
+          if ! grep -Eq '^aur\.archlinux\.org[[:space:]]' "$RUNNER_TEMP/aur-known-hosts"; then
+            echo '::error::AUR_KNOWN_HOSTS must contain a verified aur.archlinux.org host key'
+            exit 1
+          fi
+          cat > "$RUNNER_TEMP/aur-ssh-config" <<EOF
+          Host aur.archlinux.org
+            HostName aur.archlinux.org
+            User aur
+            IdentityFile $RUNNER_TEMP/aur-key
+            IdentitiesOnly yes
+            StrictHostKeyChecking yes
+            UserKnownHostsFile $RUNNER_TEMP/aur-known-hosts
+          EOF
+          export GIT_SSH_COMMAND="ssh -F $RUNNER_TEMP/aur-ssh-config"
+          git clone ssh://aur@aur.archlinux.org/icarus-launcher-bin.git aur-package
+          echo "GIT_SSH_COMMAND=$GIT_SSH_COMMAND" >> "$GITHUB_ENV"
+
+      - name: Update PKGBUILD and .SRCINFO
+        run: |
+          python - <<'PY'
+          import os
+          import re
+          from hashlib import sha256
+          from pathlib import Path
+
+          version = os.environ['RELEASE_TAG'].removeprefix('v')
+          deb = Path('release-package') / f'Icarus_{version}_amd64.deb'
+          checksum = sha256(deb.read_bytes()).hexdigest()
+          path = Path('aur-package/PKGBUILD')
+          contents = path.read_text()
+          replacements = {
+              r'^pkgver=.*$': f'pkgver={version}',
+              r'^pkgrel=.*$': 'pkgrel=1',
+              r'^url=.*$': "url='https://github.com/fraa2a/Icarus'",
+              r'^license=.*$': "license=('GPL-3.0-only')",
+              r'^source=.*$': 'source=("${_pkgname}_${pkgver}_amd64.deb::${url}/releases/download/v${pkgver}/${_pkgname}_${pkgver}_amd64.deb")',
+              r'^sha256sums=.*$': f"sha256sums=('{checksum}')",
+          }
+          for pattern, replacement in replacements.items():
+              contents, count = re.subn(pattern, lambda _: replacement, contents, flags=re.M)
+              if count != 1:
+                  raise SystemExit(f'Expected exactly one PKGBUILD line for {pattern}: {count}')
+          path.write_text(contents)
+          PY
+          docker run --rm --user "$(id -u):$(id -g)" -v "$PWD/aur-package:/pkg" -w /pkg archlinux:base-devel makepkg --printsrcinfo > aur-package/.SRCINFO
+          grep -Fq "pkgver = ${RELEASE_TAG#v}" aur-package/.SRCINFO
+
+      - name: Publish AUR package
+        working-directory: aur-package
+        run: |
+          git add PKGBUILD .SRCINFO
+          if git diff --cached --quiet; then
+            echo 'AUR package already matches this release'
+            exit 0
+          fi
+          git -c user.name='Icarus Release Bot' -c user.email='actions@users.noreply.github.com' commit -m "Update Icarus to ${RELEASE_TAG#v}"
+          git push origin HEAD:master
