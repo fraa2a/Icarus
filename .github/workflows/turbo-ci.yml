@@ -128,7 +128,13 @@ jobs:
 
       - name: Start required services
         if: steps.check-labrinth.outputs.needs_services == 'true'
-        run: docker compose --profile clustered-redis up --wait
+        run: |
+          if ! docker compose --profile clustered-redis up --wait; then
+            docker compose ps -a
+            docker compose logs --no-color clickhouse
+            docker inspect labrinth-clickhouse --format '{{json .State}}'
+            exit 1
+          fi
 
       - name: Setup labrinth environment and database
         if: steps.check-labrinth.outputs.needs_services == 'true'

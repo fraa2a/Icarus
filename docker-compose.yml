@@ -411,9 +411,10 @@ services:
       CLICKHOUSE_PASSWORD: default
     healthcheck:
       test: ['CMD-SHELL', 'clickhouse-client --query "SELECT 1"']
+      start_period: 60s
       interval: 3s
       timeout: 5s
-      retries: 3
+      retries: 10
   mail:
     image: axllent/mailpit:v1.27
     container_name: labrinth-mail
