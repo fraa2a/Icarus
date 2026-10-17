@@ -1373,9 +1373,6 @@
   "app.nav.switch-account": {
     "message": "Changer de compte"
   },
-  "app.nav.upgrade-to-modrinth-plus": {
-    "message": "Passer à Modrinth+"
-  },
   "app.nav.view-profile": {
     "message": "Voir le profil"
   },
@@ -1646,9 +1643,6 @@
   "app.settings.default-instance-options.height.title": {
     "message": "Hauteur"
   },
-  "app.settings.default-instance-options.java-and-memory.title": {
-    "message": "Java et mémoire"
-  },
   "app.settings.default-instance-options.java-arguments.description": {
     "message": "Arguments transmis à Java lors du lancement d'une instance."
   },
@@ -1657,9 +1651,6 @@
   },
   "app.settings.default-instance-options.java-arguments.title": {
     "message": "Arguments Java"
-  },
-  "app.settings.default-instance-options.launch-hooks.title": {
-    "message": "Crochets de lancement"
   },
   "app.settings.default-instance-options.memory-allocation.description": {
     "message": "Mémoire maximale disponible pour chaque instance."
@@ -1693,9 +1684,6 @@
   },
   "app.settings.default-instance-options.width.title": {
     "message": "Largeur"
-  },
-  "app.settings.default-instance-options.window.title": {
-    "message": "Fenêtre"
   },
   "app.settings.default-instance-options.wrapper-hook.description": {
     "message": "Commande utilisée pour encapsuler le processus de lancement de Minecraft."
@@ -2729,20 +2717,11 @@
   "app.settings.operating-system.macos": {
     "message": "macOS"
   },
-  "app.settings.privacy.ads-consent.intro": {
-    "message": "Les publicités rendent Modrinth possible et financent les rémunérations des créateurs. Nos partenaires peuvent stocker des cookies ou y accéder au sein de l'application afin de personnaliser les publicités et de mesurer les performances. Vous pouvez refuser ou gérer vos préférences ci-dessous."
-  },
   "app.settings.privacy.discord-rich-presence.description": {
     "message": "Affiche Icarus en tant que votre activité actuelle sur Discord. Cela n'affecte pas Rich Presence ajouté à l'instance par les mods. Nécessite un redémarrage de l'application."
   },
   "app.settings.privacy.discord-rich-presence.title": {
     "message": "Discord Rich Presence"
-  },
-  "app.settings.privacy.telemetry.description": {
-    "message": "Modrinth collecte des données d'analyse et d'utilisation anonymes afin d'améliorer l'expérience utilisateur et de personnaliser votre expérience. En désactivant cette option, vous choisissez de ne plus participer et vos données ne seront plus collectées."
-  },
-  "app.settings.privacy.telemetry.title": {
-    "message": "Télémétrie"
   },
   "app.settings.resource-management.always-show-copy-details.description": {
     "message": "Afficher l’action Copier les détails lorsqu’une installation est en attente ou en cours. Elle est toujours disponible pour les installations échouées ou interrompues."
@@ -2753,14 +2732,8 @@
   "app.settings.resource-management.app-cache.confirm.description": {
     "message": "L'application peut se charger plus lentement jusqu'à ce que le cache soit reconstruit."
   },
-  "app.settings.resource-management.app-cache.confirm.title": {
-    "message": "Purger le cache de l'application ?"
-  },
   "app.settings.resource-management.app-cache.description": {
     "message": "Nettoyer des données cachées et les télécharger de nouveau depuis Modrinth. L'application peut charger plus lentement jusqu'à ce que le cache soit de nouveau reconstitué."
-  },
-  "app.settings.resource-management.app-cache.purge": {
-    "message": "Purger le cache"
   },
   "app.settings.resource-management.app-cache.title": {
     "message": "Cache de l'application"
@@ -2837,9 +2810,6 @@
   "app.settings.resource-management.store.description": {
     "message": "Économisez de l'espace en réutilisant les installations de jeux, les mods et les packs entre vos instances."
   },
-  "app.settings.resource-management.store.empty": {
-    "message": "Installez des mods ou des packs pour voir votre utilisation du stockage ici."
-  },
   "app.settings.resource-management.store.issues": {
     "message": "Voir {count, plural, one {# problème} other {# problèmes}}"
   },
@@ -2878,9 +2848,6 @@
   },
   "app.settings.resource-management.store.verified": {
     "message": "Vérification terminée"
-  },
-  "app.settings.sidebar.label.instances": {
-    "message": "Instance"
   },
   "app.settings.synced-options.choose-sync-source.command-history-description": {
     "message": "Choisissez l'instance à partir de laquelle copier votre historique de commandes. Cet historique n'est utilisé que pour la synchronisation initiale. Vous pourrez le modifier depuis n'importe quelle instance par la suite."
@@ -3122,12 +3089,6 @@
   "app.settings.tabs.privacy": {
     "message": "Confidentialité"
   },
-  "app.settings.tabs.resource-management": {
-    "message": "Gestion des ressources"
-  },
-  "app.settings.tabs.synced-options": {
-    "message": "Paramètres synchronisés"
-  },
   "app.sidebar.playing-as": {
     "message": "Joue en tant que"
   },
@@ -3301,21 +3262,6 @@
   },
   "app.skins.toggle-ears-features-on": {
     "message": "Activer"
-  },
-  "app.survey.body": {
-    "message": "Cela vous dérangerait-il de répondre à quelques questions sur votre expérience avec l'application Modrinth ?"
-  },
-  "app.survey.footer": {
-    "message": "Ces retours seront transmis directement à l'équipe de Modrinth et aideront à orienter les futures mises à jour !"
-  },
-  "app.survey.no-thanks": {
-    "message": "Non merci"
-  },
-  "app.survey.take-survey": {
-    "message": "Répondre au sondage"
-  },
-  "app.survey.title": {
-    "message": "Salut, utilisateur de Modrinth !"
   },
   "app.sync-instances-update.badge": {
     "message": "Nouveautés de cette mise à jour"
@@ -4147,15 +4093,6 @@
   },
   "instance.settings.tabs.installation.locked": {
     "message": "Les paramètres d'installation ne sont pas disponible pendant que cette instance est verrouillée."
-  },
-  "instance.settings.tabs.java.custom-environment-variables": {
-    "message": "Paramétrer les variables d'environnement séparément pour cette instance."
-  },
-  "instance.settings.tabs.java.custom-java-arguments": {
-    "message": "Paramétrer les arguments Java séparément pour cette instance."
-  },
-  "instance.settings.tabs.java.custom-java-installation": {
-    "message": "Sélectionner une installation Java différente pour cette instance."
   },
   "instance.settings.tabs.java.enter-environment-variables": {
     "message": "Entrer une variable d'environnement..."

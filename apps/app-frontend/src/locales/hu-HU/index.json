@@ -3245,21 +3245,6 @@
   "app.skins.toggle-ears-features-on": {
     "message": "Bekapcsolás"
   },
-  "app.survey.body": {
-    "message": "Megosztanád velünk a tapasztalataidat a Icarus használatáról néhány kérdés megválaszolásával?"
-  },
-  "app.survey.footer": {
-    "message": "A visszajelzésed közvetlenül a Modrinth csapatához kerül, és segít a jövőbeli frissítések alakításában!"
-  },
-  "app.survey.no-thanks": {
-    "message": "Nem, köszönöm"
-  },
-  "app.survey.take-survey": {
-    "message": "Kérdőív kitöltése"
-  },
-  "app.survey.title": {
-    "message": "Hali, Modrinth-felhasználó!"
-  },
   "app.sync-instances-update.badge": {
     "message": "Új ebben a frissítésben"
   },

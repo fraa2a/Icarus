@@ -1376,9 +1376,6 @@
   "app.nav.switch-account": {
     "message": "切換帳號"
   },
-  "app.nav.upgrade-to-modrinth-plus": {
-    "message": "升級至 Modrinth+"
-  },
   "app.nav.view-profile": {
     "message": "查看個人檔案"
   },
@@ -1649,9 +1646,6 @@
   "app.settings.default-instance-options.height.title": {
     "message": "高度"
   },
-  "app.settings.default-instance-options.java-and-memory.title": {
-    "message": "Java 和記憶體"
-  },
   "app.settings.default-instance-options.java-arguments.description": {
     "message": "啟動實例時傳遞給 Java 的參數。"
   },
@@ -1660,9 +1654,6 @@
   },
   "app.settings.default-instance-options.java-arguments.title": {
     "message": "Java 參數"
-  },
-  "app.settings.default-instance-options.launch-hooks.title": {
-    "message": "啟動掛勾"
   },
   "app.settings.default-instance-options.memory-allocation.description": {
     "message": "各個實例可使用的記憶體上限。"
@@ -1696,9 +1687,6 @@
   },
   "app.settings.default-instance-options.width.title": {
     "message": "寬度"
-  },
-  "app.settings.default-instance-options.window.title": {
-    "message": "視窗"
   },
   "app.settings.default-instance-options.wrapper-hook.description": {
     "message": "用於包裝 Minecraft 啟動處理程序的指令。"
@@ -2732,20 +2720,11 @@
   "app.settings.operating-system.macos": {
     "message": "macOS"
   },
-  "app.settings.privacy.ads-consent.intro": {
-    "message": "廣告使 Modrinth 得以營運，並為創作者提供收益。我們的合作夥伴可能會在應用程式中儲存或存取 Cookie，以實現個人化廣告並衡量廣告成效。你可以在下方選擇退出或管理偏好設定。"
-  },
   "app.settings.privacy.discord-rich-presence.description": {
     "message": "在 Discord 上將 Icarus 顯示為目前活動。這不會影響模組為實例新增的豐富狀態。需要重新啟動應用程式。"
   },
   "app.settings.privacy.discord-rich-presence.title": {
     "message": "Discord 豐富狀態"
-  },
-  "app.settings.privacy.telemetry.description": {
-    "message": "Modrinth 會收集匿名化的分析與使用資料，以提升使用者體驗並提供客製化服務。若停用此選項，即表示你選擇退出，你的資料將不再被收集。"
-  },
-  "app.settings.privacy.telemetry.title": {
-    "message": "遙測"
   },
   "app.settings.resource-management.always-show-copy-details.description": {
     "message": "當安裝已排入佇列或正在執行時，顯示「複製詳細資訊」按鈕。這項設定僅適用於前述安裝情形，安裝失敗或中斷時一律顯示該按鈕。"
@@ -2756,14 +2735,8 @@
   "app.settings.resource-management.app-cache.confirm.description": {
     "message": "在快取完成重建前，應用程式的載入速度可能會比較慢。"
   },
-  "app.settings.resource-management.app-cache.confirm.title": {
-    "message": "要清除應用程式快取嗎？"
-  },
   "app.settings.resource-management.app-cache.description": {
     "message": "清除快取資料，並從 Modrinth 重新下載。在快取完成重建前，應用程式的載入速度可能會比較慢。"
-  },
-  "app.settings.resource-management.app-cache.purge": {
-    "message": "清除快取"
   },
   "app.settings.resource-management.app-cache.title": {
     "message": "應用程式快取"
@@ -2840,9 +2813,6 @@
   "app.settings.resource-management.store.description": {
     "message": "跨實例重複使用遊戲安裝檔、模組和其他內容，即可節省空間。"
   },
-  "app.settings.resource-management.store.empty": {
-    "message": "安裝模組或其他內容即可在這裡查看儲存空間使用狀況。"
-  },
   "app.settings.resource-management.store.issues": {
     "message": "查看 {count, plural, other {# 個問題}}"
   },
@@ -2881,9 +2851,6 @@
   },
   "app.settings.resource-management.store.verified": {
     "message": "驗證完成"
-  },
-  "app.settings.sidebar.label.instances": {
-    "message": "實例"
   },
   "app.settings.synced-options.choose-sync-source.command-history-description": {
     "message": "選擇要從哪個實例複製指令紀錄。這個紀錄僅用於初始同步，你之後可以從任何實例中進行編輯。"
@@ -3125,12 +3092,6 @@
   "app.settings.tabs.privacy": {
     "message": "隱私"
   },
-  "app.settings.tabs.resource-management": {
-    "message": "資源管理"
-  },
-  "app.settings.tabs.synced-options": {
-    "message": "同步設定"
-  },
   "app.sidebar.playing-as": {
     "message": "目前遊玩帳號"
   },
@@ -3304,21 +3265,6 @@
   },
   "app.skins.toggle-ears-features-on": {
     "message": "開啟"
-  },
-  "app.survey.body": {
-    "message": "你方便回答幾個關於 Icarus 使用體驗的問題嗎？"
-  },
-  "app.survey.footer": {
-    "message": "你的回覆將直接傳送給 Modrinth 團隊，作為未來更新方向的指引！"
-  },
-  "app.survey.no-thanks": {
-    "message": "不用了，謝謝"
-  },
-  "app.survey.take-survey": {
-    "message": "填寫問卷調查"
-  },
-  "app.survey.title": {
-    "message": "你好啊，Modrinth 使用者！"
   },
   "app.sync-instances-update.badge": {
     "message": "更新內容"
@@ -4127,9 +4073,6 @@
   "instance.settings.tabs.general.update-channel.select": {
     "message": "選擇更新通道"
   },
-  "instance.settings.tabs.hooks.description": {
-    "message": "在啟動遊戲之前和之後，執行特定於這個實例的系統指令。"
-  },
   "instance.settings.tabs.hooks.post-exit": {
     "message": "結束後"
   },
@@ -4190,18 +4133,6 @@
   "instance.settings.tabs.installation.locked": {
     "message": "實例被鎖定時無法使用安裝設定選項。"
   },
-  "instance.settings.tabs.java.custom-environment-variables": {
-    "message": "單獨設定這個實例的環境變數。"
-  },
-  "instance.settings.tabs.java.custom-java-arguments": {
-    "message": "單獨設定這個實例的 Java 參數。"
-  },
-  "instance.settings.tabs.java.custom-java-installation": {
-    "message": "在這個實例使用不同的 Java 安裝。"
-  },
-  "instance.settings.tabs.java.custom-memory-allocation": {
-    "message": "單獨設定這個實例的記憶體配置。"
-  },
   "instance.settings.tabs.java.enter-environment-variables": {
     "message": "輸入環境變數..."
   },
@@ -4225,9 +4156,6 @@
   },
   "instance.settings.tabs.java.java-path-placeholder": {
     "message": "/path/to/java"
-  },
-  "instance.settings.tabs.settings-overrides": {
-    "message": "覆寫同步設定"
   },
   "instance.settings.tabs.sharing": {
     "message": "共用"
@@ -4291,9 +4219,6 @@
   },
   "instance.settings.tabs.window": {
     "message": "自訂視窗設定"
-  },
-  "instance.settings.tabs.window.custom-window-settings": {
-    "message": "單獨設定這個實例的全螢幕與啟動解析度選項。"
   },
   "instance.settings.tabs.window.fullscreen": {
     "message": "全螢幕"

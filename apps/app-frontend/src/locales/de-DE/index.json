@@ -3266,21 +3266,6 @@
   "app.skins.toggle-ears-features-on": {
     "message": "Aktivieren"
   },
-  "app.survey.body": {
-    "message": "Könntest du ein paar Fragen über deine Erfahrung mit Icarus beantworten?"
-  },
-  "app.survey.footer": {
-    "message": "Das Feedback geht direkt an das Modrinth-Team und wird helfen, zukünftige Updates zu gestalten!"
-  },
-  "app.survey.no-thanks": {
-    "message": "Nein danke"
-  },
-  "app.survey.take-survey": {
-    "message": "An Umfrage teilnehmen"
-  },
-  "app.survey.title": {
-    "message": "Hey, Modrinth Nutzer!"
-  },
   "app.sync-instances-update.badge": {
     "message": "Neu in diesem Update"
   },

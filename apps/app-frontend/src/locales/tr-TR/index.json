@@ -2714,21 +2714,6 @@
   "app.skins.toggle-ears-features-on": {
     "message": "Aç"
   },
-  "app.survey.body": {
-    "message": "Icarus deneyiminiz hakkında birkaç soruyu cevaplamak ister misiniz?"
-  },
-  "app.survey.footer": {
-    "message": "Bu geri bildirim doğrudan Modrinth ekibine gidecek ve gelecek güncellemeleri şekillendirecek!"
-  },
-  "app.survey.no-thanks": {
-    "message": "Hayır teşekkürler"
-  },
-  "app.survey.take-survey": {
-    "message": "Ankete katıl"
-  },
-  "app.survey.title": {
-    "message": "Merhaba Modrinth kullanıcısı!"
-  },
   "app.sync-instances-update.skip": {
     "message": "Atla"
   },
