@@ -1541,9 +1541,6 @@
   "app.settings.default-instance-options.height.title": {
     "message": "الارتفاع"
   },
-  "app.settings.default-instance-options.java-and-memory.title": {
-    "message": "جافا والذاكرة"
-  },
   "app.settings.default-instance-options.java-arguments.description": {
     "message": "المعاملات (Arguments) الممررة إلى Java عند تشغيل النسخة."
   },
@@ -1552,9 +1549,6 @@
   },
   "app.settings.default-instance-options.java-arguments.title": {
     "message": "معاملات Java"
-  },
-  "app.settings.default-instance-options.launch-hooks.title": {
-    "message": "إجراءات تشغيل إضافية"
   },
   "app.settings.default-instance-options.memory-allocation.description": {
     "message": "الحد الأقصى للذاكرة المتاحة لكل نسخة."
@@ -1588,9 +1582,6 @@
   },
   "app.settings.default-instance-options.width.title": {
     "message": "العرض"
-  },
-  "app.settings.default-instance-options.window.title": {
-    "message": "النافذة"
   },
   "app.settings.default-instance-options.wrapper-hook.description": {
     "message": "الأمر المستخدم لتغليف (Wrap) عملية تشغيل ماين كرافت."
@@ -1694,6 +1685,9 @@
   "app.settings.game-options.choice.on": {
     "message": "مفعل"
   },
+  "app.settings.game-options.choice.opengl": {
+    "message": "OpenGL"
+  },
   "app.settings.game-options.choice.right": {
     "message": "يمين"
   },
@@ -1730,14 +1724,8 @@
   "app.settings.resource-management.app-cache.confirm.description": {
     "message": "قد يتم تحميل التطبيق بشكل أبطأ حتى يتم إعادة بناء التخزين المؤقت."
   },
-  "app.settings.resource-management.app-cache.confirm.title": {
-    "message": "هل تريد مسح التخزين المؤقت للتطبيق؟"
-  },
   "app.settings.resource-management.app-cache.description": {
     "message": "مسح البيانات المخبأة (الذاكرة المؤقتة) وتنزيلها مرة أخرى من Modrinth. قد يتم تحميل التطبيق بشكل أبطأ حتى يتم إعادة بناء الذاكرة المؤقتة."
-  },
-  "app.settings.resource-management.app-cache.purge": {
-    "message": "مسح التخزين المؤقت"
   },
   "app.settings.resource-management.app-cache.title": {
     "message": "ذاكرة التطبيق المؤقتة"
@@ -1774,9 +1762,6 @@
   },
   "app.settings.resource-management.maximum-concurrent-writes.title": {
     "message": "الحد الأقصى لعمليات الكتابة المتزامنة"
-  },
-  "app.settings.sidebar.label.instances": {
-    "message": "نسخ"
   },
   "app.settings.synced-options.choose-sync-source.no-instances-found": {
     "message": "لم يتم العثور على أي نسخ"
@@ -1834,12 +1819,6 @@
   },
   "app.settings.tabs.privacy": {
     "message": "الخصوصية"
-  },
-  "app.settings.tabs.resource-management": {
-    "message": "إدارة الموارد"
-  },
-  "app.settings.tabs.synced-options": {
-    "message": "الإعدادات المتزامنة"
   },
   "app.sidebar.playing-as": {
     "message": "اللعب كـ"
@@ -2005,21 +1984,6 @@
   },
   "app.skins.toggle-ears-features-on": {
     "message": "تشغيل"
-  },
-  "app.survey.body": {
-    "message": "هل تمانع في الإجابة على بضعة أسئلة حول تجربتك مع تطبيق Modrinth؟"
-  },
-  "app.survey.footer": {
-    "message": "ستنتقل هذه الملاحظات مباشرة إلى فريق Modrinth وتساعد في توجيه التحديثات القادمة!أهلاً بك يا مستخدم Modrinth!"
-  },
-  "app.survey.no-thanks": {
-    "message": "لا شكراً"
-  },
-  "app.survey.take-survey": {
-    "message": "شارك في الاستطلاع"
-  },
-  "app.survey.title": {
-    "message": "أهلاً بك يا مستخدم Modrinth!"
   },
   "app.update-popup.body.download-complete": {
     "message": "انتهى تنزيل تطبيق Modrinth v{version}. أعد التحميل للتحديث الآن، أو تلقائيًا عند إغلاق تطبيق Modrinth."
@@ -2669,9 +2633,6 @@
   "instance.settings.tabs.general.update-channel.select": {
     "message": "اختر قناة التحديث"
   },
-  "instance.settings.tabs.hooks.description": {
-    "message": "تشغيل أوامر النظام الخاصة بكل نسخة قبل وبعد بدء اللعبة."
-  },
   "instance.settings.tabs.hooks.post-exit": {
     "message": "ما بعد الخروج"
   },
@@ -2732,18 +2693,6 @@
   "instance.settings.tabs.installation.locked": {
     "message": "إعدادات التثبيت غير متاحة أثناء قفل هذه النسخة."
   },
-  "instance.settings.tabs.java.custom-environment-variables": {
-    "message": "تعيين متغيرات البيئة بشكل منفصل لهذه النسخة."
-  },
-  "instance.settings.tabs.java.custom-java-arguments": {
-    "message": "تعيين حجج جافا بشكل منفصل لهذه النسخة."
-  },
-  "instance.settings.tabs.java.custom-java-installation": {
-    "message": "اختر تثبيت جافا مختلف لهذه النسخة."
-  },
-  "instance.settings.tabs.java.custom-memory-allocation": {
-    "message": "تعيين تخصيص الذاكرة بشكل منفصل لهذه النسخة."
-  },
   "instance.settings.tabs.java.enter-environment-variables": {
     "message": "أدخل المتغيرات البيئية..."
   },
@@ -2767,9 +2716,6 @@
   },
   "instance.settings.tabs.java.java-path-placeholder": {
     "message": "/path/to/java"
-  },
-  "instance.settings.tabs.settings-overrides": {
-    "message": "تجاوز المزامنة"
   },
   "instance.settings.tabs.sharing": {
     "message": "مشاركة"
@@ -2824,9 +2770,6 @@
   },
   "instance.settings.tabs.window": {
     "message": "إعدادات نافذة مخصصة"
-  },
-  "instance.settings.tabs.window.custom-window-settings": {
-    "message": "تكوين ملء الشاشة ودقة التشغيل بشكل منفصل لهذه النسخة."
   },
   "instance.settings.tabs.window.fullscreen": {
     "message": "ملء الشاشة"
