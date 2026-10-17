@@ -3245,21 +3245,6 @@
   "app.skins.toggle-ears-features-on": {
     "message": "Показать"
   },
-  "app.survey.body": {
-    "message": "Не хотите ответить на несколько вопросов о вашем опыте с Icarus?"
-  },
-  "app.survey.footer": {
-    "message": "Этот отзыв будет доставлен напрямую команде Modrinth и поможет разрабатывать будущие обновления!"
-  },
-  "app.survey.no-thanks": {
-    "message": "Нет, спасибо"
-  },
-  "app.survey.take-survey": {
-    "message": "Пройти опрос"
-  },
-  "app.survey.title": {
-    "message": "Привет, пользователь Modrinth!"
-  },
   "app.sync-instances-update.badge": {
     "message": "Новинка"
   },

@@ -3161,24 +3161,6 @@
   "app.settings.troubleshooting.clear-cache.confirm.title": {
     "message": "Clear the app cache?"
   },
-  "app.settings.troubleshooting.report-ad.copied": {
-    "message": "Copied"
-  },
-  "app.settings.troubleshooting.report-ad.copy": {
-    "message": "Copy ad details"
-  },
-  "app.settings.troubleshooting.report-ad.description": {
-    "message": "Seen an inappropriate or offensive ad? Copy its details while it's showing and send them to <support>Modrinth Support</support>. We'll review it and remove it."
-  },
-  "app.settings.troubleshooting.report-ad.no-ad.text": {
-    "message": "Wait for the ad to load, then try again."
-  },
-  "app.settings.troubleshooting.report-ad.no-ad.title": {
-    "message": "No ad found"
-  },
-  "app.settings.troubleshooting.report-ad.title": {
-    "message": "Report an ad"
-  },
   "app.sidebar.playing-as": {
     "message": "Playing as"
   },
@@ -3353,21 +3335,6 @@
   "app.skins.toggle-ears-features-on": {
     "message": "Toggle on"
   },
-  "app.survey.body": {
-    "message": "Would you mind answering a few questions about your experience with Icarus?"
-  },
-  "app.survey.footer": {
-    "message": "This feedback will go directly to the Modrinth team and help guide future updates!"
-  },
-  "app.survey.no-thanks": {
-    "message": "No thanks"
-  },
-  "app.survey.take-survey": {
-    "message": "Take survey"
-  },
-  "app.survey.title": {
-    "message": "Hey there Modrinth user!"
-  },
   "app.sync-instances-update.badge": {
     "message": "New this update"
   },
@@ -3498,13 +3465,13 @@
     "message": "Synced resource packs"
   },
   "app.update-popup.body.download-complete": {
-    "message": "Icarus v{version} has finished downloading. Reload to update now, or automatically when you close Icarus."
+    "message": "Modrinth App v{version} has finished downloading. Reload to update now, or automatically when you close Modrinth App."
   },
   "app.update-popup.body.linux": {
-    "message": "Icarus v{version} is available. Use your package manager to update for the latest features and fixes!"
+    "message": "Modrinth App v{version} is available. Use your package manager to update for the latest features and fixes!"
   },
   "app.update-popup.body.metered": {
-    "message": "Icarus v{version} is available now! Since you're on a metered network, we didn't automatically download it."
+    "message": "Modrinth App v{version} is available now! Since you're on a metered network, we didn't automatically download it."
   },
   "app.update-popup.changelog": {
     "message": "Changelog"

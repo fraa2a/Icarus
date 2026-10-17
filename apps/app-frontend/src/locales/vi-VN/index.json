@@ -3266,21 +3266,6 @@
   "app.skins.toggle-ears-features-on": {
     "message": "Bật"
   },
-  "app.survey.body": {
-    "message": "Bạn có thể dành chút thời gian trả lời vài câu hỏi về trải nghiệm với Ứng dụng Modrinth không?"
-  },
-  "app.survey.footer": {
-    "message": "Phản hồi này sẽ được gửi trực tiếp tới đội ngũ Modrinth và giúp định hướng các bản cập nhật trong tương lai!"
-  },
-  "app.survey.no-thanks": {
-    "message": "Không, cảm ơn"
-  },
-  "app.survey.take-survey": {
-    "message": "Tham gia khảo sát"
-  },
-  "app.survey.title": {
-    "message": "Xin chào người dùng Modrinth!"
-  },
   "app.sync-instances-update.badge": {
     "message": "Mới trong bản cập nhật này"
   },
