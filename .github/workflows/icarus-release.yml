@@ -280,12 +280,11 @@ jobs:
       GH_REPO: ${{ github.repository }}
       RELEASE_TAG: ${{ github.ref_name }}
       AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
-      AUR_KNOWN_HOSTS: ${{ secrets.AUR_KNOWN_HOSTS }}
     steps:
       - name: Check AUR credentials
         run: |
-          if [[ -z "$AUR_SSH_PRIVATE_KEY" || -z "$AUR_KNOWN_HOSTS" ]]; then
-            echo '::error::Set AUR_SSH_PRIVATE_KEY and AUR_KNOWN_HOSTS repository secrets'
+          if [[ -z "$AUR_SSH_PRIVATE_KEY" ]]; then
+            echo '::error::Set the AUR_SSH_PRIVATE_KEY repository secret'
             exit 1
           fi
 
@@ -301,9 +300,17 @@ jobs:
         run: |
           umask 077
           printf '%s\n' "$AUR_SSH_PRIVATE_KEY" > "$RUNNER_TEMP/aur-key"
-          printf '%s\n' "$AUR_KNOWN_HOSTS" > "$RUNNER_TEMP/aur-known-hosts"
-          if ! grep -Eq '^aur\.archlinux\.org[[:space:]]' "$RUNNER_TEMP/aur-known-hosts"; then
-            echo '::error::AUR_KNOWN_HOSTS must contain a verified aur.archlinux.org host key'
+          # Fetch the current key, then verify against the independently pinned
+          # AUR Ed25519 SSH host fingerprint before trusting it.
+          ssh-keyscan -T 15 -t ed25519 aur.archlinux.org 2>/dev/null > "$RUNNER_TEMP/aur-known-hosts"
+          if [[ $(wc -l < "$RUNNER_TEMP/aur-known-hosts") -ne 1 ]]; then
+            echo '::error::Expected exactly one AUR Ed25519 host key'
+            exit 1
+          fi
+          expected='SHA256:RFzBCUItH9LZS0cKB5UE6ceAYhBD5C8GeOBip8Z11+4'
+          actual=$(ssh-keygen -lf "$RUNNER_TEMP/aur-known-hosts" -E sha256 | awk '{print $2}')
+          if [[ "$actual" != "$expected" ]]; then
+            echo "::error::Unexpected AUR SSH host fingerprint: $actual"
             exit 1
           fi
           cat > "$RUNNER_TEMP/aur-ssh-config" <<EOF
