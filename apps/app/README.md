@@ -38,10 +38,11 @@ The `Icarus release` workflow builds signed bundles on GitHub-hosted Linux, Wind
 After a stable GitHub release is published, the workflow updates the existing
 `icarus-launcher-bin` AUR package from the release's verified `.deb` artifact.
 Set `AUR_SSH_PRIVATE_KEY` to a dedicated, unencrypted SSH private key whose
-public key is registered with the AUR account that maintains the package. Set
-`AUR_KNOWN_HOSTS` to the independently verified `aur.archlinux.org` SSH host
-key line in OpenSSH `known_hosts` format. Do not put either private key in the
-repository. Prereleases do not update AUR.
+public key is registered with the AUR account that maintains the package.
+The workflow fetches the AUR SSH host key automatically and verifies its
+Ed25519 fingerprint against the value published by Arch Linux before connecting.
+Only the private key is required as a repository secret; never commit it.
+Prereleases do not update AUR.
 
 Run the workflow manually to build and verify the bundles without publishing. Changes to the release workflow or updater configuration on `main` also trigger this verification. To publish, push a `vMAJOR.MINOR.PATCH` tag matching the upstream app version. The workflow sets the app's build version from that tag, verifies every update signature, and publishes the installers and `latest.json` together. Prerelease tags publish prereleases without changing the stable updater endpoint.
 
