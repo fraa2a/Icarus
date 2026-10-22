@@ -20,6 +20,8 @@ env:
   TURBO_TELEMETRY_DISABLED: '1'
   SQLX_OFFLINE: 'true'
   SHARP_IGNORE_GLOBAL_LIBVIPS: '1'
+  # Bootstrap the 0.22.0 release from the verified main-branch build; future releases remain tag-driven.
+  ICARUS_RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || (github.event_name == 'push' && github.ref == 'refs/heads/main' && startsWith(github.event.head_commit.message, 'Release Icarus v0.22.0') && 'v0.22.0' || '') }}
 
 jobs:
   build:
@@ -82,8 +84,8 @@ jobs:
           import re
           from pathlib import Path
 
-          if os.environ['GITHUB_REF_TYPE'] == 'tag':
-              tag = os.environ['GITHUB_REF_NAME']
+          if os.environ['ICARUS_RELEASE_TAG']:
+              tag = os.environ['ICARUS_RELEASE_TAG']
               if not re.fullmatch(r'v(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-[0-9A-Za-z.-]+)?', tag):
                   raise SystemExit('Release tags must use vMAJOR.MINOR.PATCH, optionally with a prerelease suffix')
               version = tag[1:]
@@ -178,8 +180,8 @@ jobs:
                       raise SystemExit(f'Duplicate release asset: {path.name}')
                   shutil.copyfile(path, destination)
 
-          tag = os.environ['GITHUB_REF_NAME']
-          version = tag[1:] if os.environ['GITHUB_REF_TYPE'] == 'tag' else '1.0.0-local'
+          tag = os.environ['ICARUS_RELEASE_TAG'] or os.environ['GITHUB_REF_NAME']
+          version = tag[1:] if os.environ['ICARUS_RELEASE_TAG'] else '1.0.0-local'
           base_url = f'https://github.com/{os.environ["GITHUB_REPOSITORY"]}/releases/download/{quote(tag, safe="")}/'
 
           def find_one(pattern):
@@ -227,14 +229,14 @@ jobs:
 
   publish:
     needs: verify
-    if: github.event_name == 'push' && github.ref_type == 'tag'
+    if: github.event_name == 'push' && (github.ref_type == 'tag' || (github.ref == 'refs/heads/main' && startsWith(github.event.head_commit.message, 'Release Icarus v0.22.0')))
     runs-on: ubuntu-24.04
     permissions:
       contents: write
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
-      RELEASE_TAG: ${{ github.ref_name }}
+      RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || 'v0.22.0' }}
     steps:
       - name: Download verified release assets
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
@@ -250,7 +252,11 @@ jobs:
               exit 1
             fi
           else
-            gh release create "$RELEASE_TAG" --verify-tag --draft --title "Icarus ${RELEASE_TAG#v}" --generate-notes
+            if [[ "$GITHUB_REF_TYPE" == 'tag' ]]; then
+              gh release create "$RELEASE_TAG" --verify-tag --draft --title "Icarus ${RELEASE_TAG#v}" --generate-notes
+            else
+              gh release create "$RELEASE_TAG" --target "$GITHUB_SHA" --draft --title "Icarus ${RELEASE_TAG#v}" --generate-notes
+            fi
           fi
           gh release view "$RELEASE_TAG" --json body --jq '.body' > release-notes.md
           python - <<'PY'
@@ -274,14 +280,14 @@ jobs:
 
   publish-aur:
     needs: publish
-    if: github.event_name == 'push' && github.ref_type == 'tag' && !contains(github.ref_name, '-')
+    if: github.event_name == 'push' && (github.ref_type == 'tag' && !contains(github.ref_name, '-') || (github.ref == 'refs/heads/main' && startsWith(github.event.head_commit.message, 'Release Icarus v0.22.0')))
     runs-on: ubuntu-24.04
     permissions:
       contents: read
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
-      RELEASE_TAG: ${{ github.ref_name }}
+      RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || 'v0.22.0' }}
       AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
     steps:
       - name: Check AUR credentials
