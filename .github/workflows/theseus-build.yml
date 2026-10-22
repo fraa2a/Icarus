@@ -281,6 +281,9 @@ jobs:
       - name: Install dependencies
         run: pnpm --filter @modrinth/monorepo --filter @modrinth/app... install --frozen-lockfile
 
+      - name: Generate language coverage data
+        run: pnpm i18n:coverage
+
       - name: Set app environment
         shell: bash
         run: cp packages/app-lib/.env.prod packages/app-lib/.env
