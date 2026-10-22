@@ -52,8 +52,10 @@ jobs:
               git rm -f -- "$path"
             fi
           done < "$RUNNER_TEMP/icarus-removed-paths"
+          # Preserve Icarus CI and release workflows, and avoid modifying
+          # workflow files with the restricted GitHub Actions token.
+          git restore --source=HEAD --staged --worktree -- .github/workflows
           git diff --cached --check
-          git rm .github/workflows/icarus-upstream-once.yml
           git commit -m 'merge: sync Modrinth v0.22.0 into Icarus'
           git push origin HEAD:sync/modrinth-v0.22.0
           echo 'The merge candidate is available on sync/modrinth-v0.22.0.'
