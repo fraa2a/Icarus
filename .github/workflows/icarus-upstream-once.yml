@@ -31,10 +31,21 @@ jobs:
           git diff --name-only --diff-filter=D v0.21.10 HEAD -- apps packages > "$RUNNER_TEMP/icarus-removed-paths"
           echo "Preserving $(wc -l < "$RUNNER_TEMP/icarus-removed-paths") Icarus-deleted app/package paths"
           if ! git merge --no-ff --no-commit -X ours v0.22.0; then
-            echo '::error::Upstream merge needs manual conflict resolution'
-            git diff --name-only --diff-filter=U
-            git status --short
-            exit 1
+            # Keep Icarus-deleted promotional files deleted when upstream modifies them.
+            mapfile -t conflicts < <(git diff --name-only --diff-filter=U)
+            for path in "${conflicts[@]}"; do
+              if grep -Fxq -- "$path" "$RUNNER_TEMP/icarus-removed-paths"; then
+                echo "Keeping Icarus deletion: $path"
+                git rm -f -- "$path"
+              else
+                echo "::error::Unrecognized merge conflict: $path"
+                exit 1
+              fi
+            done
+            if [[ -n "$(git ls-files -u)" ]]; then
+              echo '::error::Unresolved merge conflicts remain'
+              exit 1
+            fi
           fi
           while IFS= read -r path; do
             if [[ -e "$path" || -L "$path" ]]; then
