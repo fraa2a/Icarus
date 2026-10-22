@@ -1,0 +1,49 @@
+name: Icarus one-time upstream merge
+
+on:
+  push:
+    branches: ['sync/modrinth-v0.22.0']
+    paths: ['.github/workflows/icarus-upstream-once.yml']
+
+permissions:
+  contents: write
+
+jobs:
+  merge:
+    if: github.repository == 'fraa2a/Icarus'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Check out Icarus history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Merge Modrinth v0.22.0 while preserving fork deletions
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'Icarus Upstream Sync'
+          git config user.email 'actions@users.noreply.github.com'
+          git remote add upstream https://github.com/modrinth/code.git
+          git fetch upstream tag v0.21.10 tag v0.22.0
+          git merge-base --is-ancestor v0.21.10 HEAD
+          git diff --name-only --diff-filter=D v0.21.10 HEAD -- apps packages > "$RUNNER_TEMP/icarus-removed-paths"
+          echo "Preserving $(wc -l < "$RUNNER_TEMP/icarus-removed-paths") Icarus-deleted app/package paths"
+          if ! git merge --no-ff --no-commit -X ours v0.22.0; then
+            echo '::error::Upstream merge needs manual conflict resolution'
+            git diff --name-only --diff-filter=U
+            git status --short
+            exit 1
+          fi
+          while IFS= read -r path; do
+            if [[ -e "$path" || -L "$path" ]]; then
+              git rm -f -- "$path"
+            fi
+          done < "$RUNNER_TEMP/icarus-removed-paths"
+          git diff --cached --check
+          git rm .github/workflows/icarus-upstream-once.yml
+          git commit -m 'merge: sync Modrinth v0.22.0 into Icarus'
+          git push origin HEAD:sync/modrinth-v0.22.0
+          echo 'The merge candidate is available on sync/modrinth-v0.22.0.'
+          echo 'Review all changes for hosting, ads, telemetry, paid features and Icarus-specific functionality before merging to main.'
