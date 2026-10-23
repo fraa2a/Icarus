@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: icarus-release-${{ github.ref }}
+  group: icarus-publish-${{ github.ref }}
   cancel-in-progress: false
 
 env:
