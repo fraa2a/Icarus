@@ -247,7 +247,8 @@ async fn create_copy(
     )
     .await?;
     let job_id = Uuid::parse_str(&job.job_id)?;
-    crate::install::runner::wait_for_job(job_id).await?;
+    let state = State::get().await?;
+    crate::install::runner::wait_for_job(job_id, &state.pool).await?;
     let completed = crate::install::get_job(job_id).await?;
     let id = completed
         .instance_id
