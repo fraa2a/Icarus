@@ -20,7 +20,8 @@ env:
   TURBO_TELEMETRY_DISABLED: '1'
   SQLX_OFFLINE: 'true'
   SHARP_IGNORE_GLOBAL_LIBVIPS: '1'
-  # Bootstrap the 0.22.0 release from the verified main-branch build; future releases remain tag-driven.
+  # Only a main commit titled "Release Icarus v0.22.0" bootstraps this version.
+  # A repeat of that marker retries the signed release after native compilation fixes.
   ICARUS_RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || (github.event_name == 'push' && github.ref == 'refs/heads/main' && startsWith(github.event.head_commit.message, 'Release Icarus v0.22.0') && 'v0.22.0' || '') }}
 
 jobs:
