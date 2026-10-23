@@ -21,7 +21,7 @@ env:
   SQLX_OFFLINE: 'true'
   SHARP_IGNORE_GLOBAL_LIBVIPS: '1'
   # Only a main commit titled "Release Icarus v0.22.0" bootstraps this version.
-  # A repeat of that marker retries the signed release after native compilation fixes.
+  # Repeat the marker after native-code fixes; publishing still requires verified signatures.
   ICARUS_RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || (github.event_name == 'push' && github.ref == 'refs/heads/main' && startsWith(github.event.head_commit.message, 'Release Icarus v0.22.0') && 'v0.22.0' || '') }}
 
 jobs:
