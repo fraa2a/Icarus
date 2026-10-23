@@ -341,7 +341,7 @@ impl Credentials {
         if !(3..=16).contains(&name.len())
             || !name.bytes().all(|c| c.is_ascii_alphanumeric() || c == b'_')
         {
-            return Err(ErrorKind::OtherError(
+            return Err(ErrorKind::InputError(
                 "Offline usernames must be 3–16 ASCII letters, numbers, or underscores".into(),
             ).as_error());
         }
@@ -367,7 +367,7 @@ impl Credentials {
 
     pub fn require_online(&self) -> crate::Result<()> {
         if self.is_offline() {
-            return Err(ErrorKind::OtherError(
+            return Err(ErrorKind::InputError(
                 "Offline accounts cannot change Minecraft skins or capes. Select a Microsoft account.".into(),
             ).as_error());
         }

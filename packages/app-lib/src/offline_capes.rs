@@ -2,7 +2,7 @@
 //!
 //! The endpoint deliberately cannot authenticate users or join online-mode servers.
 use base64::{Engine, engine::general_purpose::STANDARD};
-use eyre::{Result, bail, eyre};
+use anyhow::{Result, anyhow, bail};
 use rand::rngs::OsRng;
 use rsa::{Pkcs1v15Sign, RsaPrivateKey, pkcs8::EncodePublicKey};
 use serde_json::{Value, json};
@@ -402,7 +402,7 @@ async fn serve(mut stream: TcpStream, state: &LocalProfile) -> Result<()> {
     let line = std::str::from_utf8(&request)?
         .lines()
         .next()
-        .ok_or_else(|| eyre!("Missing request line"))?;
+        .ok_or_else(|| anyhow!("Missing request line"))?;
     let mut words = line.split_whitespace();
     let method = words.next().unwrap_or("");
     let target = words.next().unwrap_or("");
