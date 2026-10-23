@@ -343,7 +343,7 @@ impl Credentials {
         {
             return Err(ErrorKind::InputError(
                 "Offline usernames must be 3–16 ASCII letters, numbers, or underscores".into(),
-            ).as_error());
+            ).into());
         }
         let mut bytes = md5::compute(format!("OfflinePlayer:{name}")).0;
         bytes[6] = (bytes[6] & 0x0f) | 0x30;
@@ -369,7 +369,7 @@ impl Credentials {
         if self.is_offline() {
             return Err(ErrorKind::InputError(
                 "Offline accounts cannot change Minecraft skins or capes. Select a Microsoft account.".into(),
-            ).as_error());
+            ).into());
         }
         Ok(())
     }
